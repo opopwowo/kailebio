@@ -12,3 +12,10 @@ desktop.ini
 # 編輯器設定
 .vscode/
 launch.json
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
