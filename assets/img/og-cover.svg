@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="愷樂生醫有限公司">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFFCF2"/>
+      <stop offset="100%" stop-color="#F3E3BE"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="85%" cy="20%" r="60%">
+      <stop offset="0%" stop-color="#C8A24D" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#C8A24D" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <circle cx="150" cy="315" r="80" fill="#7A1024"/>
+  <text x="150" y="345" font-family="'Noto Serif TC',serif" font-size="80" font-weight="700" fill="#C8A24D" text-anchor="middle">愷</text>
+  <text x="280" y="270" font-family="'Noto Serif TC','Noto Sans TC',serif" font-size="76" font-weight="700" fill="#7A1024">愷樂生醫有限公司</text>
+  <text x="282" y="340" font-family="'Noto Sans TC',sans-serif" font-size="34" fill="#222222">健康・美妝・寵物 多品類專業代理商</text>
+  <text x="282" y="400" font-family="'Noto Sans TC',sans-serif" font-size="28" fill="#7A1024">晶凍健康食品 × FORA 醫療器材</text>
+  <rect x="282" y="440" width="120" height="3" fill="#C8A24D"/>
+  <text x="282" y="500" font-family="Arial,sans-serif" font-size="24" letter-spacing="3" fill="#C8A24D">CASH BIOMEDICAL CO., LTD.</text>
+</svg>

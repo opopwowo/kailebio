@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80" role="img" aria-label="愷樂生醫 Cash Biomedical">
+  <rect width="320" height="80" fill="none"/>
+  <g>
+    <circle cx="40" cy="40" r="26" fill="#7A1024"/>
+    <text x="40" y="50" font-family="'Noto Serif TC',serif" font-size="28" font-weight="700" fill="#C8A24D" text-anchor="middle">愷</text>
+  </g>
+  <text x="78" y="38" font-family="'Noto Serif TC','Noto Sans TC',serif" font-size="26" font-weight="700" fill="#7A1024">愷樂生醫</text>
+  <text x="78" y="60" font-family="Arial,sans-serif" font-size="13" letter-spacing="2" fill="#C8A24D">CASH BIOMEDICAL</text>
+</svg>

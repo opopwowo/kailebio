@@ -1,0 +1,14 @@
+# 部署 zip（不需要追蹤）
+*.zip
+
+# 系統檔
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 舊版備份資料夾
+凱樂生醫_網站佈署版/
+
+# 編輯器設定
+.vscode/
+launch.json
