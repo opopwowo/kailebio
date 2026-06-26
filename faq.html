@@ -19,12 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Serif+TC:wght@500;700&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = { theme: { extend: {
-    colors: { primary: '#7A1024', accent: '#C8A24D', ivory: '#FAFAF8', ink: '#222222' },
-    fontFamily: { sans: ['Noto Sans TC', 'sans-serif'], serif: ['Noto Serif TC', 'serif'] } } } };
-</script>
+<link rel="stylesheet" href="assets/css/tailwind.css">
 <link rel="stylesheet" href="assets/css/style.css">
 <script type="application/ld+json">
 {
@@ -34,12 +29,28 @@
     { "@type": "Question", "name": "晶凍是什麼？", "acceptedAnswer": { "@type": "Answer", "text": "晶凍是一種果凍狀的保健食品劑型，質地軟滑易食用，適合添加各類營養素，特別適合長輩、兒童與吞嚥能力較弱的族群。" } },
     { "@type": "Question", "name": "OEM 與 ODM 有什麼差異？", "acceptedAnswer": { "@type": "Answer", "text": "OEM 是品牌方提供配方或規格由代工廠生產；ODM 則是代工廠協助從配方設計、研發到生產全程規劃。" } },
     { "@type": "Question", "name": "保健食品代工最少要多少量？", "acceptedAnswer": { "@type": "Answer", "text": "依劑型與配方而定，建議直接與業務團隊洽談，可依需求提供彈性的試做與量產建議。" } },
+    { "@type": "Question", "name": "晶凍代工可以做哪些劑型與口味？", "acceptedAnswer": { "@type": "Answer", "text": "常見劑型包含條狀晶凍、果凍杯與軟糖等；口味可依品牌需求客製，如莓果、柑橘、葡萄等，並可搭配膠原蛋白、益生菌、葉黃素等多種機能原料。" } },
+    { "@type": "Question", "name": "一個代工案從洽談到量產大約需要多久？", "acceptedAnswer": { "@type": "Answer", "text": "依配方複雜度、原料採購與包裝設計而異，一般從打樣確認到量產約需數週至數月，建議及早與業務團隊規劃時程。" } },
+    { "@type": "Question", "name": "代工有提供配方研發與打樣服務嗎？", "acceptedAnswer": { "@type": "Answer", "text": "有，提供從配方設計、原料建議到實際打樣的 ODM 服務，品牌方可先試樣確認口感與規格後再進入量產。" } },
+    { "@type": "Question", "name": "保健食品上市需要哪些檢驗或文件？", "acceptedAnswer": { "@type": "Answer", "text": "依產品類別不同，常見包含成分檢驗、重金屬與微生物檢測、營養標示計算與符合食品安全衛生管理法之標示規範，我們會協助品牌方完成相關準備。" } },
+    { "@type": "Question", "name": "代工有協助包裝設計與標示法規嗎？", "acceptedAnswer": { "@type": "Answer", "text": "可協助包裝設計建議與營養標示、成分標示之法規確認，協助品牌符合台灣食品標示相關規定。" } },
+    { "@type": "Question", "name": "可以做素食或全素配方嗎？", "acceptedAnswer": { "@type": "Answer", "text": "可依需求規劃素食或全素配方，於配方設計階段即可指定原料來源與膠體類型，避免使用動物性成分。" } },
+    { "@type": "Question", "name": "IM8 適合哪些人？", "acceptedAnswer": { "@type": "Answer", "text": "適合忙碌現代人、外食族、銀髮族、運動族群與想以簡單方式補足每日營養的人。" } },
+    { "@type": "Question", "name": "IM8 每天怎麼吃、多久有感？", "acceptedAnswer": { "@type": "Answer", "text": "每日建議補充一包，搭配水或常溫飲品沖泡飲用。因個人體質與作息不同而有差異，多數人建議規律補充 4 至 8 週並維持均衡生活，感受較為穩定。" } },
     { "@type": "Question", "name": "血糖機如何挑選？", "acceptedAnswer": { "@type": "Answer", "text": "可從準確度（ISO 15197）、採血量、試紙成本、操作便利性與售後服務五面向評估。" } },
     { "@type": "Question", "name": "血糖機準確度怎麼看？", "acceptedAnswer": { "@type": "Answer", "text": "主要參考國際標準 ISO 15197，確認測量值落在實驗室參考值的合理誤差範圍內。" } },
+    { "@type": "Question", "name": "居家血糖機測值和醫院抽血不同，正常嗎？", "acceptedAnswer": { "@type": "Answer", "text": "略有差異屬正常現象。居家血糖機多為微血管全血量測，醫院為靜脈血漿檢驗，兩者方法不同；只要落在合理誤差範圍內即可作為日常追蹤參考。" } },
     { "@type": "Question", "name": "血糖試紙如何保存？", "acceptedAnswer": { "@type": "Answer", "text": "存放於陰涼乾燥處、避免陽光直射與潮濕，每次取用後立即蓋緊瓶蓋，並在有效期限內使用完畢。" } },
+    { "@type": "Question", "name": "血糖試紙可以不同機型混用嗎？", "acceptedAnswer": { "@type": "Answer", "text": "不建議。試紙需搭配相對應機型與校正碼使用，混用可能導致數值不準確，請使用原廠對應的試紙。" } },
     { "@type": "Question", "name": "血壓計選臂式還是腕式？", "acceptedAnswer": { "@type": "Answer", "text": "一般建議臂式血壓計，量測位置接近心臟、數據較穩定；腕式輕巧適合外出但較易受姿勢影響。" } },
-    { "@type": "Question", "name": "IM8 適合哪些人？", "acceptedAnswer": { "@type": "Answer", "text": "適合忙碌現代人、外食族、銀髮族、運動族群與想以簡單方式補足每日營養的人。" } },
-    { "@type": "Question", "name": "如何與愷樂生醫聯繫？", "acceptedAnswer": { "@type": "Answer", "text": "業務經理游勝愷，電話 0963-339-098，Email lawrenceyu911@gmail.com，亦可透過 LINE 聯繫。" } }
+    { "@type": "Question", "name": "血壓什麼時候量最準確？", "acceptedAnswer": { "@type": "Answer", "text": "建議在固定時間量測，例如晨起與睡前；量測前先靜坐休息約 5 分鐘，避免咖啡因、運動或情緒激動後立即測量，並保持手臂與心臟同高。" } },
+    { "@type": "Question", "name": "額溫槍與耳溫槍有什麼差別？", "acceptedAnswer": { "@type": "Answer", "text": "額溫槍量測額頭表面溫度、非接觸快速適合大量篩檢；耳溫槍量測耳膜紅外線溫度、較接近核心體溫。兩者量測部位不同，判讀時建議參考各自的正常範圍。" } },
+    { "@type": "Question", "name": "體溫幾度算發燒？", "acceptedAnswer": { "@type": "Answer", "text": "一般以耳溫或肛溫達 38°C 以上視為發燒，但會因量測部位與個人基礎體溫而略有差異。若持續高燒或合併不適，建議就醫評估。" } },
+    { "@type": "Question", "name": "FORA 醫療器材有提供保固嗎？", "acceptedAnswer": { "@type": "Answer", "text": "FORA 福爾醫療器材主機提供原廠保固，實際保固期間與範圍依產品型號而定，購買時可向業務團隊確認。" } },
+    { "@type": "Question", "name": "如何與愷樂生醫聯繫？", "acceptedAnswer": { "@type": "Answer", "text": "業務經理游勝愷，電話 0963-339-098，Email lawrenceyu911@gmail.com，亦可透過 LINE 聯繫。" } },
+    { "@type": "Question", "name": "愷樂生醫有實體門市嗎？", "acceptedAnswer": { "@type": "Answer", "text": "我們以業務諮詢與配送服務為主，公司位於新北市中和區景平路268號8樓之5，建議來訪前先以電話或 LINE 預約。" } },
+    { "@type": "Question", "name": "可以辦理企業團購或員工福利方案嗎？", "acceptedAnswer": { "@type": "Answer", "text": "可以，提供企業團購與員工健康福利方案，可依人數與需求規劃，歡迎與業務經理游勝愷洽談。" } },
+    { "@type": "Question", "name": "下單後如何出貨與配送？", "acceptedAnswer": { "@type": "Answer", "text": "確認訂單後依約定方式安排宅配出貨，配送時間與運費依品項與數量而定，詳情可於洽詢時一併確認。" } }
   ]
 }
 </script>
@@ -92,20 +103,36 @@
       <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">晶凍是什麼？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">晶凍是一種果凍狀的保健食品劑型，質地軟滑易食用，適合添加各類營養素，特別適合長輩、兒童與吞嚥能力較弱的族群。</p></div></div>
       <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">OEM 與 ODM 有什麼差異？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">OEM 是品牌方提供配方或規格由代工廠生產；ODM 則是代工廠協助從配方設計、研發到生產全程規劃，品牌方僅需提出需求。</p></div></div>
       <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">保健食品代工最少要多少量？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">依劑型與配方複雜度而定，建議直接與業務團隊洽談，將依需求提供最適合的試做與量產建議。</p></div></div>
+      <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">晶凍代工可以做哪些劑型與口味？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">常見劑型包含條狀晶凍、果凍杯與軟糖等；口味可依品牌需求客製，如莓果、柑橘、葡萄等，並可搭配膠原蛋白、益生菌、葉黃素等多種機能原料。</p></div></div>
+      <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">一個代工案從洽談到量產大約需要多久？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">依配方複雜度、原料採購與包裝設計而異，一般從打樣確認到量產約需數週至數月，建議及早與業務團隊規劃時程。</p></div></div>
+      <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">代工有提供配方研發與打樣服務嗎？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">有，提供從配方設計、原料建議到實際打樣的 ODM 服務，品牌方可先試樣確認口感與規格後再進入量產。</p></div></div>
+      <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">保健食品上市需要哪些檢驗或文件？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">依產品類別不同，常見包含成分檢驗、重金屬與微生物檢測、營養標示計算與符合食品安全衛生管理法之標示規範，我們會協助品牌方完成相關準備。</p></div></div>
+      <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">代工有協助包裝設計與標示法規嗎？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">可協助包裝設計建議與營養標示、成分標示之法規確認，協助品牌符合台灣食品標示相關規定。</p></div></div>
+      <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">可以做素食或全素配方嗎？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">可依需求規劃素食或全素配方，於配方設計階段即可指定原料來源與膠體類型，避免使用動物性成分。</p></div></div>
       <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">IM8 適合哪些人？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">IM8 適合忙碌的現代人、外食族、銀髮族、運動族群與想以簡單方式補足每日營養的人群。</p></div></div>
+      <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">IM8 每天怎麼吃、多久有感？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">每日建議補充一包，搭配水或常溫飲品沖泡飲用。因個人體質與作息不同而有差異，多數人建議規律補充 4 至 8 週並維持均衡生活，感受較為穩定。</p></div></div>
     </div>
 
     <h2 class="font-serif-tc text-xl md:text-2xl font-bold mb-6 text-primary">🩺 FORA 醫療器材</h2>
     <div class="reveal mb-14">
       <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">血糖機如何挑選？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">可從準確度（ISO 15197）、採血量、試紙成本、操作便利性與售後服務五個面向評估。詳見<a href="guide.html#g-glucose" class="text-primary underline">血糖機完整選購指南</a>。</p></div></div>
       <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">血糖機準確度怎麼看？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">主要參考國際標準 ISO 15197，確認測量值落在實驗室參考值的合理誤差範圍內。可定期使用校正液確認準確度。</p></div></div>
+      <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">居家血糖機測值和醫院抽血不同，正常嗎？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">略有差異屬正常現象。居家血糖機多為微血管全血量測，醫院為靜脈血漿檢驗，兩者方法不同；只要落在合理誤差範圍內即可作為日常追蹤參考。</p></div></div>
       <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">血糖試紙如何保存？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">存放於陰涼乾燥處、避免陽光直射與潮濕，每次取用後立即蓋緊瓶蓋，並在有效期限內使用完畢。</p></div></div>
+      <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">血糖試紙可以不同機型混用嗎？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">不建議。試紙需搭配相對應機型與校正碼使用，混用可能導致數值不準確，請使用原廠對應的試紙。</p></div></div>
       <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">血壓計選臂式還是腕式？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">一般建議臂式血壓計，量測位置接近心臟、數據較穩定準確；腕式輕巧適合外出但較易受姿勢影響。詳見<a href="guide.html#g-bp" class="text-primary underline">血壓計完整選購指南</a>。</p></div></div>
+      <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">血壓什麼時候量最準確？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">建議在固定時間量測，例如晨起與睡前；量測前先靜坐休息約 5 分鐘，避免咖啡因、運動或情緒激動後立即測量，並保持手臂與心臟同高。</p></div></div>
+      <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">額溫槍與耳溫槍有什麼差別？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">額溫槍量測額頭表面溫度、非接觸快速適合大量篩檢；耳溫槍量測耳膜紅外線溫度、較接近核心體溫。兩者量測部位不同，判讀時建議參考各自的正常範圍。</p></div></div>
+      <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">體溫幾度算發燒？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">一般以耳溫或肛溫達 38°C 以上視為發燒，但會因量測部位與個人基礎體溫而略有差異。若持續高燒或合併不適，建議就醫評估。</p></div></div>
+      <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">FORA 醫療器材有提供保固嗎？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">FORA 福爾醫療器材主機提供原廠保固，實際保固期間與範圍依產品型號而定，購買時可向業務團隊確認。</p></div></div>
     </div>
 
     <h2 class="font-serif-tc text-xl md:text-2xl font-bold mb-6 text-primary">🤝 服務 / 聯繫</h2>
     <div class="reveal">
       <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">如何與愷樂生醫聯繫？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">業務經理游勝愷，電話 0963-339-098，Email lawrenceyu911@gmail.com，地址新北市中和區景平路268號8樓之5，亦可透過 LINE 聯繫。</p></div></div>
+      <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">愷樂生醫有實體門市嗎？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">我們以業務諮詢與配送服務為主，公司位於新北市中和區景平路268號8樓之5，建議來訪前先以電話或 LINE 預約。</p></div></div>
+      <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">可以辦理企業團購或員工福利方案嗎？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">可以，提供企業團購與員工健康福利方案，可依人數與需求規劃，歡迎與業務經理游勝愷洽談。</p></div></div>
+      <div class="faq-item py-6"><div class="faq-question"><h3 class="font-bold text-base md:text-lg">下單後如何出貨與配送？</h3><span class="faq-icon text-2xl text-primary">+</span></div><div class="faq-answer"><p class="text-sm text-ink/60 leading-relaxed pt-4 pr-8">確認訂單後依約定方式安排宅配出貨，配送時間與運費依品項與數量而定，詳情可於洽詢時一併確認。</p></div></div>
     </div>
   </div>
 </section>
