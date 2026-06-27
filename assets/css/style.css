@@ -131,6 +131,10 @@ body{
   .hero-cta-bottom{margin-top:auto;}
 }
 
+/* ---------- 比較表：小螢幕維持最小寬度並可橫向捲動 ----------
+   （補足預先編譯 Tailwind 未包含的任意值 min-w-[...]） */
+.overflow-x-auto > table{min-width:520px;}
+
 /* ---------- 快速結論卡：進場光澤掃過 ---------- */
 .summary-card::before{
   content:"";
