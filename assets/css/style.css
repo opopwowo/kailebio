@@ -126,6 +126,30 @@ body{
 .card-floaty{animation:card-floaty 4s ease-in-out infinite;will-change:transform;}
 @media (prefers-reduced-motion: reduce){.card-floaty{animation:none;}}
 
+/* ---------- Hero：左欄 CTA 按鈕對齊右欄底部（lg 以上） ---------- */
+@media (min-width:1024px){
+  .hero-cta-bottom{margin-top:auto;}
+}
+
+/* ---------- 快速結論卡：進場光澤掃過 ---------- */
+.summary-card::before{
+  content:"";
+  position:absolute;
+  top:0;left:-70%;width:55%;height:100%;
+  background:linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent);
+  transform:skewX(-18deg);
+  opacity:0;
+  pointer-events:none;
+  z-index:1;
+}
+.summary-card.is-visible::before{
+  animation:card-sheen 1.2s ease-out .65s 1;
+}
+.summary-card > *{position:relative;z-index:2;}
+@media (prefers-reduced-motion: reduce){
+  .summary-card::before{display:none;}
+}
+
 /* ---------- Nav ---------- */
 .nav-blur{
   background:linear-gradient(135deg, rgba(255,253,246,.88) 0%, rgba(246,233,196,.82) 100%);
