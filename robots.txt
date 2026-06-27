@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.kailebio.com/sitemap.xml
+Sitemap: https://case-55.opopwowo.workers.dev/sitemap.xml
