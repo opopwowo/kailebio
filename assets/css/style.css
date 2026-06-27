@@ -121,6 +121,11 @@ body{
 .lightbox-close{position:absolute;top:16px;right:24px;width:44px;height:44px;border:none;background:rgba(255,255,255,.18);color:#fff;font-size:30px;line-height:1;border-radius:50%;cursor:pointer;transition:background .2s;}
 .lightbox-close:hover{background:rgba(255,255,255,.32);}
 
+/* ---------- 名片輕微浮動 ---------- */
+@keyframes card-floaty{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+.card-floaty{animation:card-floaty 4s ease-in-out infinite;will-change:transform;}
+@media (prefers-reduced-motion: reduce){.card-floaty{animation:none;}}
+
 /* ---------- Nav ---------- */
 .nav-blur{
   background:linear-gradient(135deg, rgba(255,253,246,.88) 0%, rgba(246,233,196,.82) 100%);
