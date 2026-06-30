@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>站內搜尋｜愷樂生醫有限公司</title>
+<meta name="description" content="搜尋愷樂生醫網站：晶凍產品、成分知識中心與 100+ 篇健康知識文章。">
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://case-55.opopwowo.workers.dev/search.html">
+<link rel="icon" type="image/jpeg" href="assets/img/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Serif+TC:wght@500;700&display=swap" media="print" onload="this.media=\'all\'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Serif+TC:wght@500;700&display=swap"></noscript>
+<link rel="stylesheet" href="assets/css/tailwind.css">
+<link rel="stylesheet" href="assets/css/style.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"站內搜尋","url":"https://case-55.opopwowo.workers.dev/search.html","isPartOf":{"@id":"https://case-55.opopwowo.workers.dev/#website"}}
+</script>
+</head>
+<body class="bg-ivory text-ink antialiased">
+<div class="fixed top-0 left-0 right-0 z-[60] top-bar text-xs md:text-sm">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 h-9 md:h-10 flex items-center justify-between gap-4 overflow-x-auto whitespace-nowrap">
+    <div class="flex items-center gap-4 md:gap-6">
+      <span class="hidden sm:inline opacity-90">愷樂生醫有限公司｜統編 60417821</span>
+      <a href="tel:0963339098" class="font-bold">📞 0963-339-098</a>
+      <a href="https://line.me/ti/p/petuUoEm_w" target="_blank" rel="noopener" class="font-bold">💬 LINE</a>
+    </div>
+    <a href="index.html#contact" class="font-bold text-accent flex-shrink-0">立即諮詢 →</a>
+  </div>
+</div>
+<header class="fixed top-9 md:top-10 left-0 right-0 z-50 nav-blur">
+  <div class="max-w-7xl mx-auto px-4 md:px-6 lg:px-10 h-16 md:h-20 flex items-center justify-between gap-4">
+    <a href="index.html" class="font-serif-tc text-lg md:text-2xl font-bold text-primary tracking-wide flex-shrink-0 inline-flex items-center gap-2">
+      <img src="assets/img/logo.jpg" alt="愷樂生醫 Logo" class="h-8 w-8 md:h-10 md:w-10 rounded-full object-cover flex-shrink-0">愷樂生醫 <span class="text-accent text-xs md:text-base font-sans font-normal align-middle">CASH BIOMEDICAL</span>
+    </a>
+    <a href="index.html" class="btn-outline px-4 py-2 rounded-full text-xs flex-shrink-0">← 回首頁</a>
+  </div>
+</header>
+
+<main class="pt-32 md:pt-40 pb-20 min-h-screen">
+  <div class="max-w-3xl mx-auto px-6 lg:px-10">
+    <p class="uppercase tracking-[0.25em] text-accent text-xs md:text-sm font-medium mb-3 text-center">SEARCH</p>
+    <h1 class="font-serif-tc text-3xl md:text-4xl font-bold text-center mb-6">站內搜尋</h1>
+    <p class="text-center text-sm text-ink/55 mb-8">搜尋晶凍產品、成分知識中心與 100+ 篇健康知識文章。</p>
+    <div class="relative mb-3">
+      <input id="q" type="search" autofocus placeholder="輸入關鍵字，例如：GABA、鈣、晶凍、益生菌…" class="w-full rounded-full border border-accent/30 pl-12 pr-5 py-3.5 text-base text-ink focus:outline-none focus:border-primary shadow-sm">
+      <svg class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4" stroke-linecap="round"/></svg>
+    </div>
+    <div class="flex flex-wrap gap-2 mb-6" id="filters">
+      <button data-c="" class="fbtn text-xs font-bold px-3 py-1.5 rounded-full bg-primary text-white">全部</button>
+      <button data-c="產品" class="fbtn text-xs font-bold px-3 py-1.5 rounded-full bg-accent/10 text-ink/70">產品</button>
+      <button data-c="成分" class="fbtn text-xs font-bold px-3 py-1.5 rounded-full bg-accent/10 text-ink/70">成分</button>
+      <button data-c="文章" class="fbtn text-xs font-bold px-3 py-1.5 rounded-full bg-accent/10 text-ink/70">文章</button>
+      <button data-c="頁面" class="fbtn text-xs font-bold px-3 py-1.5 rounded-full bg-accent/10 text-ink/70">頁面</button>
+    </div>
+    <p id="count" class="text-xs text-ink/45 mb-4"></p>
+    <ul id="results" class="space-y-3"></ul>
+    <p id="empty" class="hidden text-center text-ink/50 py-10">找不到符合的內容，換個關鍵字試試，或<a href="index.html#contact" class="text-primary underline">直接聯絡我們</a>。</p>
+  </div>
+</main>
+
+<footer class="bg-[#1a0a10] text-white/70 pt-16 pb-8">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-8 gap-y-10 mb-12">
+      <div class="col-span-2 md:col-span-3 lg:col-span-1">
+        <p class="font-serif-tc text-xl font-bold text-white mb-3">愷樂生醫有限公司</p>
+        <p class="text-sm leading-relaxed">Cash Biomedical CO., LTD.<br>統一編號：60417821</p>
+        <p class="text-xs text-white/50 leading-relaxed mt-3">專業晶凍健康食品品牌｜GABA・左旋麩醯胺酸・樂暢氏晶凍｜FORA 醫療器材授權經銷</p>
+        <div class="flex gap-3 mt-4">
+          <a href="https://www.facebook.com/" target="_blank" rel="noopener" aria-label="Facebook" class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent hover:text-ink transition-colors text-xs font-bold">FB</a>
+          <a href="https://line.me/ti/p/petuUoEm_w" target="_blank" rel="noopener" aria-label="LINE" class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent hover:text-ink transition-colors text-xs font-bold">LINE</a>
+        </div>
+      </div>
+      <div>
+        <p class="text-sm font-bold text-accent mb-3 tracking-wide">產品分類</p>
+        <ul class="text-sm space-y-2">
+          <li><a href="jelly.html" class="hover:text-white transition-colors">晶凍健康食品</a></li>
+          <li><a href="gaba.html" class="hover:text-white transition-colors">GABA 鈣鎂晶凍</a></li>
+          <li><a href="glutamic.html" class="hover:text-white transition-colors">左旋麩醯胺酸晶凍</a></li>
+          <li><a href="jelly.html" class="hover:text-white transition-colors">樂暢氏晶凍（即將推出）</a></li>
+          <li><a href="guide.html" class="hover:text-white transition-colors">選購指南</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="text-sm font-bold text-accent mb-3 tracking-wide">熱門成分</p>
+        <ul class="text-sm space-y-2">
+          <li><a href="ingredients/gaba.html" class="hover:text-white transition-colors">GABA</a></li>
+          <li><a href="ingredients/l-glutamine.html" class="hover:text-white transition-colors">左旋麩醯胺酸</a></li>
+          <li><a href="ingredients/calcium.html" class="hover:text-white transition-colors">鈣 Calcium</a></li>
+          <li><a href="ingredients/magnesium.html" class="hover:text-white transition-colors">鎂 Magnesium</a></li>
+          <li><a href="ingredients/vitamin-d3.html" class="hover:text-white transition-colors">維生素 D3</a></li>
+          <li><a href="ingredients/index.html" class="hover:text-white transition-colors font-bold text-white/80">全部成分 →</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="text-sm font-bold text-accent mb-3 tracking-wide">健康知識</p>
+        <ul class="text-sm space-y-2">
+          <li><a href="blog.html" class="hover:text-white transition-colors">知識中心（首頁）</a></li>
+          <li><a href="blog-jelly-what.html" class="hover:text-white transition-colors">晶凍是什麼？</a></li>
+          <li><a href="blog-calcium-magnesium-pair.html" class="hover:text-white transition-colors">鈣鎂為什麼一起補</a></li>
+          <li><a href="blog-read-supplement-label.html" class="hover:text-white transition-colors">看懂保健食品標示</a></li>
+          <li><a href="blog-supplement-beginners.html" class="hover:text-white transition-colors">保健食品新手入門</a></li>
+          <li><a href="search.html" class="hover:text-white transition-colors font-bold text-white/80">🔍 站內搜尋</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="text-sm font-bold text-accent mb-3 tracking-wide">品牌與系列</p>
+        <ul class="text-sm space-y-2">
+          <li><a href="beauty.html" class="hover:text-white transition-colors">美妝・牙科保健</a></li>
+          <li><a href="fora.html" class="hover:text-white transition-colors">FORA 醫療器材</a></li>
+          <li><a href="dosage-forms.html" class="hover:text-white transition-colors">劑型比較中心</a></li>
+          <li><a href="ingredients/index.html#compare" class="hover:text-white transition-colors">成分比較中心</a></li>
+          <li><a href="index.html#contact" class="hover:text-white transition-colors">產品諮詢</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="text-sm font-bold text-accent mb-3 tracking-wide">常見問題</p>
+        <ul class="text-sm space-y-2">
+          <li><a href="faq.html" class="hover:text-white transition-colors">全站常見問題</a></li>
+          <li><a href="ingredients/gaba.html#faq" class="hover:text-white transition-colors">GABA FAQ</a></li>
+          <li><a href="ingredients/l-glutamine.html#faq" class="hover:text-white transition-colors">左旋麩醯胺酸 FAQ</a></li>
+        </ul>
+        <p class="text-sm font-bold text-accent mb-3 mt-5 tracking-wide">聯絡</p>
+        <ul class="text-sm space-y-2">
+          <li><a href="tel:0963339098" class="hover:text-white transition-colors">0963-339-098</a></li>
+          <li class="break-all"><a href="mailto:lawrenceyu911@gmail.com" class="hover:text-white transition-colors">lawrenceyu911@gmail.com</a></li>
+          <li>新北市中和區景平路268號8樓之5</li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between gap-4 text-xs text-white/50">
+      <p>&copy; <span id="current-year">2026</span> 愷樂生醫有限公司 Cash Biomedical CO., LTD. All Rights Reserved.</p>
+      <div class="flex gap-6"><a href="privacy.html" class="hover:text-white transition-colors">隱私權政策</a><a href="terms.html" class="hover:text-white transition-colors">服務條款</a></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const DATA = [{"t": "鳳梨酵素 Bromelain 是什麼？來源、特性與注意事項", "u": "ingredients/bromelain.html", "d": "鳳梨酵素（Bromelain）是萃取自鳳梨的蛋白質分解酵素。完整介紹鳳梨酵素的來源、特性、研究現況、常見應用與注意事項。", "c": "成分"}, {"t": "鈣 Calcium 是什麼？來源、營養角色、食物來源與每日攝取", "u": "ingredients/calcium.html", "d": "鈣是構成骨骼與牙齒的主要成分。完整介紹鈣的來源、營養素功能宣稱、食物來源、保健型式與注意事項，並說明維生素D如何幫助鈣吸", "c": "成分"}, {"t": "鈣 vs 鎂 差在哪？營養角色、食物來源與搭配比較", "u": "ingredients/compare-calcium-vs-magnesium.html", "d": "鈣與鎂是兩大重要礦物質，常被一起補充。比較鈣與鎂的營養角色、食物來源、攝取重點與搭配原因。", "c": "成分"}, {"t": "檸檬酸鈣 vs 碳酸鈣 差在哪？補鈣型式怎麼選", "u": "ingredients/compare-citrate-vs-carbonate-calcium.html", "d": "補鈣常見檸檬酸鈣與碳酸鈣兩種型式。比較兩者的含鈣量、服用時機、胃酸需求與耐受性，協助你選擇。", "c": "成分"}, {"t": "維生素D3 vs K2 差在哪？為什麼常一起補充", "u": "ingredients/compare-d3-vs-k2.html", "d": "維生素D3 與 K2 常被一起補充。比較兩者的營養角色、食物來源與搭配鈣的關係，說明為什麼常見『鈣＋D3＋K2』組合。", "c": "成分"}, {"t": "EGCG vs 一般兒茶素 差在哪？綠茶多酚關係", "u": "ingredients/compare-egcg-vs-catechins.html", "d": "EGCG 與兒茶素常被混用。本文釐清 EGCG 與一般兒茶素的關係：EGCG 是綠茶中含量最高的兒茶素，屬兒茶素家族的一", "c": "成分"}, {"t": "GABA vs 茶胺酸 差在哪？來源、特性與用途比較", "u": "ingredients/compare-gaba-vs-theanine.html", "d": "GABA 與茶胺酸（L-Theanine）常被一起討論。比較兩者的來源、化學特性、常見用途與公開研究現況，幫助你認識這兩", "c": "成分"}, {"t": "左旋麩醯胺酸 vs BCAA 差在哪？運動營養胺基酸比較", "u": "ingredients/compare-glutamine-vs-bcaa.html", "d": "左旋麩醯胺酸與 BCAA（支鏈胺基酸）都是運動營養常見的胺基酸。比較兩者的定義、組成、來源與用途差異。", "c": "成分"}, {"t": "維生素D2 vs D3 差在哪？來源與素食選擇", "u": "ingredients/compare-vitamin-d2-vs-d3.html", "d": "維生素D 有 D2 與 D3 兩種型式。比較 D2（麥角鈣化醇）與 D3（膽鈣化醇）的來源、是否素食與常見保健型式。", "c": "成分"}, {"t": "EGCG 是什麼？綠茶兒茶素的來源、特性與注意事項", "u": "ingredients/egcg.html", "d": "EGCG（表沒食子兒茶素沒食子酸酯）是綠茶主要的兒茶素之一，屬多酚類抗氧化成分。完整介紹 EGCG 的來源、特性、研究現", "c": "成分"}, {"t": "GABA 是什麼？γ-胺基丁酸的來源、營養角色、食物來源與注意事項", "u": "ingredients/gaba.html", "d": "GABA（γ-胺基丁酸）是什麼？完整介紹 GABA 的定義、來源、在人體中的角色、常見食物來源、保健食品應用、注意事項與", "c": "成分"}, {"t": "猴頭菇菌絲體是什麼？來源、菌絲體與子實體差異與注意事項", "u": "ingredients/hericium.html", "d": "猴頭菇菌絲體是食藥用菇猴頭菇的發酵菌絲體。完整介紹猴頭菇菌絲體的來源、菌絲體與子實體的差異、研究現況與注意事項。", "c": "成分"}, {"t": "成分知識中心", "u": "ingredients/index.html", "d": "愷樂生醫成分知識中心：完整整理 GABA、左旋麩醯胺酸、EGCG、鳳梨酵素、PUREWAY-C 維生素C、鋅、鈣、鎂、維", "c": "成分"}, {"t": "左旋麩醯胺酸（L-Glutamine）是什麼？來源、營養角色、食物來源與注意事項", "u": "ingredients/l-glutamine.html", "d": "左旋麩醯胺酸（L-Glutamine）是什麼？完整介紹其定義、來源、在人體中的角色、常見食物來源、保健食品應用、注意事項", "c": "成分"}, {"t": "鎂 Magnesium 是什麼？來源、營養角色、食物來源與注意事項", "u": "ingredients/magnesium.html", "d": "鎂有助於正常生理代謝與神經肌肉的正常功能。完整介紹鎂的來源、營養素功能宣稱、食物來源、常見型式與注意事項，以及鈣鎂搭配的", "c": "成分"}, {"t": "PUREWAY-C 維生素C 是什麼？專利型式、營養角色與食物來源", "u": "ingredients/pureway-c.html", "d": "PUREWAY-C 是一種維生素C 的專利型式。完整介紹維生素C 的營養素功能宣稱、PUREWAY-C 的特點、食物來源", "c": "成分"}, {"t": "酸櫻桃萃取物是什麼？來源、特性與注意事項", "u": "ingredients/sour-cherry.html", "d": "酸櫻桃萃取物來自酸櫻桃（如蒙特默朗西品種），天然含花青素等多酚。完整介紹酸櫻桃萃取物的來源、特性、研究現況與注意事項。", "c": "成分"}, {"t": "維生素D3 是什麼？來源、營養角色、日曬與食物來源", "u": "ingredients/vitamin-d3.html", "d": "維生素D3（膽鈣化醇）有助於鈣吸收與骨骼健康。完整介紹維生素D3 的來源、營養素功能宣稱、日曬與食物來源、單位（微克/I", "c": "成分"}, {"t": "維生素K2 是什麼？來源、營養角色、與D3鈣的搭配", "u": "ingredients/vitamin-k2.html", "d": "維生素K有助於血液正常凝固與骨骼健康。完整介紹維生素K2（MK-7）的來源、營養素功能宣稱、食物來源、與鈣D3的搭配與注", "c": "成分"}, {"t": "鋅 Zinc 是什麼？來源、營養角色、食物來源與注意事項", "u": "ingredients/zinc.html", "d": "鋅有助於正常免疫功能、生長發育與皮膚健康。完整介紹鋅的來源、營養素功能宣稱、食物來源、常見型式與注意事項。", "c": "成分"}, {"t": "胺基酸是什麼？必需與非必需胺基酸一次懂", "u": "blog-amino-acid-basics.html", "d": "胺基酸是蛋白質的基本單位。本文說明胺基酸的分類（必需／非必需）、食物來源，以及 GABA、麩醯胺酸等常見成分的定位。", "c": "文章"}, {"t": "抗氧化是什麼？常見抗氧化成分整理", "u": "blog-antioxidant-basics.html", "d": "抗氧化是常被提到的保健概念。本文說明抗氧化的基本概念，以及維生素C、EGCG、花青素等常見抗氧化成分。", "c": "文章"}, {"t": "抗氧化食物有哪些？多色蔬果與多酚整理", "u": "blog-antioxidant-foods.html", "d": "抗氧化食物有哪些？整理富含維生素C、多酚、花青素的多色蔬果，以及日常抗氧化飲食重點。", "c": "文章"}, {"t": "維生素B群是什麼？B1到B12 與食物來源", "u": "blog-b-vitamins.html", "d": "維生素B群包含哪些？介紹 B1、B2、B6、B12、葉酸等成員的營養角色與食物來源。", "c": "文章"}, {"t": "臂式 vs 腕式血壓計：居家量測該選哪一種？", "u": "blog-bp-arm-wrist.html", "d": "臂式血壓計數據穩定準確、適合居家；腕式輕巧方便、適合外出。本文比較兩者差異與選購建議。", "c": "文章"}, {"t": "血壓量測常見錯誤：數值不準的 6 個原因", "u": "blog-bp-error.html", "d": "血壓量測常見錯誤包含未休息、姿勢不正確、壓脈帶位置錯誤等。本文整理 6 個導致數值不準的原因。", "c": "文章"}, {"t": "高血壓居家量測指南：722 原則與正確姿勢", "u": "blog-bp-home.html", "d": "居家血壓量測掌握 722 原則：連續 7 天、早晚各量、每次量 2 次取平均。本文解析正確量測姿勢與注意事項。", "c": "文章"}, {"t": "血壓正常值與高血壓分級標準", "u": "blog-bp-normal.html", "d": "成人理想血壓建議低於 120/80 mmHg。本文整理血壓分級標準與高血壓判定參考。", "c": "文章"}, {"t": "想做自有保健品牌？從 0 到 1 的步驟", "u": "blog-brand-start.html", "d": "想創立自己的保健食品品牌？本文整理從定位、配方、代工到上市的基本步驟與注意事項。", "c": "文章"}, {"t": "如何打造保健食品品牌？創業五步驟", "u": "blog-brand.html", "d": "打造保健食品品牌的五步驟：市場定位、產品開發、法規合規、品牌識別、通路行銷。本文完整解析創業流程。", "c": "文章"}, {"t": "鳳梨酵素是什麼？和吃鳳梨一樣嗎？", "u": "blog-bromelain-pineapple.html", "d": "鳳梨酵素萃取自鳳梨，是蛋白質分解酵素。本文說明鳳梨酵素與吃鳳梨的差別、來源與注意事項。", "c": "文章"}, {"t": "鈣怎麼吃吸收才好？補鈣時機與搭配重點", "u": "blog-calcium-absorption.html", "d": "補鈣不只看吃多少，也看怎麼吸收。本文整理鈣的吸收重點：分次補充、維生素D 搭配、與食物及藥物的關係。", "c": "文章"}, {"t": "鈣鎂為什麼要一起補？鈣鎂比例與搭配重點", "u": "blog-calcium-magnesium-pair.html", "d": "鈣與鎂是兩大重要礦物質，常被一起補充。本文說明鈣鎂的營養角色、常見比例與搭配維生素D、K2 的原因。", "c": "文章"}, {"t": "素食者怎麼補鈣？植物性鈣來源整理", "u": "blog-calcium-vegan.html", "d": "素食者如何攝取足夠鈣質？整理傳統豆腐、深綠蔬菜、黑芝麻等植物性鈣來源與吸收重點。", "c": "文章"}, {"t": "膠原蛋白晶凍：OEM 開發重點與配方考量", "u": "blog-collagen-jelly.html", "d": "膠原蛋白晶凍是熱門的代工品項。本文說明膠原蛋白晶凍的配方考量、口味與 OEM 開發重點。", "c": "文章"}, {"t": "膠原蛋白怎麼挑？分子量、來源與搭配重點", "u": "blog-collagen-pick.html", "d": "膠原蛋白產品百百種，怎麼挑？本文整理膠原蛋白的來源、分子量、與維生素C 搭配等選購重點。", "c": "文章"}, {"t": "膠原蛋白晶凍開發指南：品牌差異化關鍵", "u": "blog-collagen.html", "d": "膠原蛋白晶凍結合熱門成分與好吃劑型，是保健品牌的人氣選擇。本文解析膠原蛋白晶凍開發重點。", "c": "文章"}, {"t": "維生素D3 和 K2 為什麼要一起補？鈣D3K2 黃金組合", "u": "blog-d3-k2-together.html", "d": "維生素D3 與 K2 常被一起補充。本文說明 D3、K2 各自的營養角色，以及為什麼常見『鈣＋D3＋K2』組合。", "c": "文章"}, {"t": "每日營養補充檢查清單：簡單顧好基礎", "u": "blog-daily-nutrition-checklist.html", "d": "每天該注意哪些營養？一份簡單的日常檢查清單：蔬果、蛋白質、礦物質、水分與作息。", "c": "文章"}, {"t": "得舒飲食 DASH：幫助控制血壓的飲食法", "u": "blog-dash-diet.html", "d": "得舒飲食 DASH 強調多蔬果、全穀、低脂乳與減鈉，是經研究支持有助控制血壓的飲食模式。本文完整介紹。", "c": "文章"}, {"t": "EGCG 與綠茶的關係：兒茶素是什麼？", "u": "blog-egcg-green-tea.html", "d": "EGCG 是綠茶中含量最高的兒茶素。本文說明 EGCG 與綠茶、兒茶素的關係、來源與注意事項。", "c": "文章"}, {"t": "銀髮族保健食品怎麼挑？好入口與營養重點", "u": "blog-elderly-supplement.html", "d": "銀髮族挑選保健食品要注意什麼？本文整理長輩常需留意的營養、好入口劑型與選購提醒。", "c": "文章"}, {"t": "電解質是什麼？常見電解質與礦物質關係", "u": "blog-electrolytes.html", "d": "電解質是維持身體機能的重要礦物質。本文介紹鈉、鉀、鈣、鎂等常見電解質的角色與補充情境。", "c": "文章"}, {"t": "脂溶性與水溶性維生素差在哪？吸收與注意", "u": "blog-fat-water-vitamins.html", "d": "維生素分脂溶性與水溶性。本文說明兩者的差別、吸收方式與補充注意（過量風險）。", "c": "文章"}, {"t": "魚油保健食品開發：濃度與型式的關鍵", "u": "blog-fishoil.html", "d": "魚油開發需注意 Omega-3（EPA/DHA）濃度、TG型與EE型、氧化穩定性與腥味處理。本文解析魚油產品開發。", "c": "文章"}, {"t": "GABA 食物有哪些？富含 γ-胺基丁酸的食材整理", "u": "blog-gaba-food.html", "d": "GABA 存在於哪些食物？整理發芽糙米、發酵食品、茶葉等富含 γ-胺基丁酸的食材，以及保健食品中的 GABA 來源。", "c": "文章"}, {"t": "GABA 怎麼吃？食用時機與份量觀念", "u": "blog-gaba-how-to-eat.html", "d": "GABA 怎麼吃、什麼時候吃？本文整理 GABA 的食用時機、份量觀念與注意事項，以認識成分為主。", "c": "文章"}, {"t": "血糖機準確度怎麼看？ISO 15197 完整說明", "u": "blog-glucose-accuracy.html", "d": "血糖機準確度主要參考 ISO 15197 國際標準。本文說明如何判讀準確度、何時需校正，以及影響準確度的因素。", "c": "文章"}, {"t": "血糖飲食控制：穩定血糖的飲食原則", "u": "blog-glucose-diet.html", "d": "穩定血糖的飲食原則包含控制精緻澱粉、增加纖維、定時定量與注意進食順序。本文整理日常血糖飲食重點。", "c": "文章"}, {"t": "血糖正常值範圍：空腹與飯後標準一次看", "u": "blog-glucose-normal.html", "d": "血糖正常值：空腹約 70-99 mg/dL、飯後 2 小時低於 140 mg/dL。本文整理血糖分級參考數值。", "c": "文章"}, {"t": "血糖機如何挑選？五大關鍵面向", "u": "blog-glucose-pick.html", "d": "挑選血糖機可從準確度、採血量、試紙成本、操作便利性與售後服務五大面向評估。本文完整解析血糖機選購重點。", "c": "文章"}, {"t": "血糖什麼時候量？飯前飯後血糖測量時機", "u": "blog-glucose-when.html", "d": "血糖測量時機包含空腹、飯前、飯後 2 小時與睡前。本文說明各時段血糖的意義與正確測量方式。", "c": "文章"}, {"t": "左旋麩醯胺酸怎麼選？來源、型式與食用提醒", "u": "blog-glutamine-guide.html", "d": "左旋麩醯胺酸（L-Glutamine）是運動營養常見胺基酸。本文說明其來源、常見型式、與 BCAA 的差異與選購提醒。", "c": "文章"}, {"t": "運動後的營養補充：左旋麩醯胺酸與運動營養", "u": "blog-glutamine-sports.html", "d": "運動族常討論的營養補充有哪些？本文介紹運動營養中常見的成分（如左旋麩醯胺酸、BCAA）與補充觀念。", "c": "文章"}, {"t": "腸道健康與日常飲食：纖維、發酵食品與水分", "u": "blog-gut-health-diet.html", "d": "顧腸道健康從飲食開始。整理膳食纖維、發酵食品、水分與規律作息重點。", "c": "文章"}, {"t": "糖化血色素 HbA1c 是什麼？與血糖的關係", "u": "blog-hba1c.html", "d": "糖化血色素 HbA1c 反映近 2-3 個月的平均血糖，是糖尿病控制的重要指標。本文說明 HbA1c 的意義與目標值。", "c": "文章"}, {"t": "猴頭菇：菌絲體與子實體差在哪？一次看懂", "u": "blog-hericium-types.html", "d": "猴頭菇保健成分常見「菌絲體」與「子實體」。本文說明兩者的差別、來源與選購注意。", "c": "文章"}, {"t": "一天該喝多少水？日常補水觀念", "u": "blog-hydration.html", "d": "每天該喝多少水？本文整理一般成人的補水觀念、影響需求的因素與補水小提醒。", "c": "文章"}, {"t": "低血糖怎麼辦？症狀與緊急處理", "u": "blog-hypoglycemia.html", "d": "低血糖常見症狀包含發抖、冒冷汗、心悸與飢餓感，可用 15-15 法則緊急補糖。本文說明低血糖處理方式。", "c": "文章"}, {"t": "IM8 是什麼？全方位營養補充方案介紹", "u": "blog-im8-intro.html", "d": "IM8 是強調每日一包、全方位營養補充的保健方案。本文介紹 IM8 的特色與適合族群。", "c": "文章"}, {"t": "支持免疫的營養有哪些？鋅與日常飲食重點", "u": "blog-immune-nutrition.html", "d": "想維持正常免疫功能，營養是基礎之一。本文整理與免疫相關的營養（如鋅）與日常飲食重點。", "c": "文章"}, {"t": "鐵怎麼吃吸收好？搭配維生素C 的重點", "u": "blog-iron-absorption.html", "d": "鐵的吸收與搭配有關。本文說明動物性與植物性鐵的差異，以及維生素C 如何促進鐵吸收。", "c": "文章"}, {"t": "晶凍口味與配方設計：OEM 怎麼開發一支晶凍？", "u": "blog-jelly-flavor-design.html", "d": "開發一支晶凍要考慮哪些？本文說明晶凍的口味、機能原料與配方設計重點，以及 OEM／ODM 開發流程。", "c": "文章"}, {"t": "兒童可以吃晶凍保健食品嗎？家長注意事項", "u": "blog-jelly-kids.html", "d": "晶凍好入口，孩子也愛吃，但家長該注意什麼？本文整理兒童食用晶凍的安全提醒與選購重點。", "c": "文章"}, {"t": "晶凍代工流程：從配方到量產 7 步驟", "u": "blog-jelly-process.html", "d": "晶凍保健食品代工流程包含需求諮詢、配方設計、樣品試做、法規檢驗、包裝設計、試產與量產 7 大步驟。本文完整解析。", "c": "文章"}, {"t": "晶凍怎麼保存與食用？開封與保存注意事項", "u": "blog-jelly-storage.html", "d": "晶凍保健食品怎麼保存才安心？本文整理晶凍的保存方式、開封後注意與食用提醒。", "c": "文章"}, {"t": "晶凍的口感怎麼來的？膠體與製作原理科普", "u": "blog-jelly-texture.html", "d": "晶凍軟滑的口感是怎麼形成的？本文以科普角度說明晶凍的膠體原理與口感設計。", "c": "文章"}, {"t": "為什麼晶凍劑型這麼夯？市場趨勢解析", "u": "blog-jelly-trend.html", "d": "晶凍劑型因易食用、口感佳、攜帶方便而快速成長，成為保健食品市場熱門選擇。本文解析晶凍走紅的原因。", "c": "文章"}, {"t": "晶凍 vs 膠囊怎麼選？保健食品劑型比較", "u": "blog-jelly-vs-capsule.html", "d": "保健食品該選晶凍還是膠囊？比較晶凍與膠囊、錠劑在食用便利性、口感、攜帶與適合族群上的差異。", "c": "文章"}, {"t": "晶凍 vs 軟糖差在哪？保健劑型比較", "u": "blog-jelly-vs-gummy.html", "d": "晶凍和軟糖看起來都像零食，差在哪？本文比較晶凍與軟糖在質地、含糖、成分承載與使用情境的差異。", "c": "文章"}, {"t": "晶凍是什麼？保健食品劑型完整介紹", "u": "blog-jelly-what.html", "d": "晶凍是一種果凍狀的保健食品劑型，質地軟滑易食用、接受度高。本文完整介紹晶凍的特性、優點與適合族群。", "c": "文章"}, {"t": "保健食品標示法規須知：品牌上市前必看", "u": "blog-label-rule.html", "d": "保健食品上市前需注意品名、成分、營養標示、保存期限與警語等標示規範。本文整理常見標示重點。", "c": "文章"}, {"t": "猴頭菇是什麼？菌絲體、子實體與料理", "u": "blog-lions-mane-intro.html", "d": "猴頭菇（lion's mane）是什麼？本文介紹猴頭菇的特性、菌絲體與子實體的差別，以及常見料理與保健應用。", "c": "文章"}, {"t": "晶凍很甜嗎？無糖、低糖晶凍的設計", "u": "blog-low-sugar-jelly.html", "d": "晶凍是不是都很甜？本文說明晶凍的甜度與熱量設計，以及無糖、低糖晶凍如何達成好口感。", "c": "文章"}, {"t": "葉黃素是什麼？用眼族的成分認識", "u": "blog-lutein-intro.html", "d": "葉黃素是什麼？介紹來源、食物（深綠蔬菜）、與玉米黃素的關係與選購認識。", "c": "文章"}, {"t": "葉黃素保健食品開發：護眼市場的關鍵成分", "u": "blog-lutein.html", "d": "葉黃素是熱門護眼成分，開發時需注意游離型與酯化型、劑量與搭配成分。本文解析葉黃素產品開發重點。", "c": "文章"}, {"t": "鎂的食物有哪些？高鎂食材整理", "u": "blog-magnesium-food.html", "d": "鎂存在於哪些食物？整理深綠蔬菜、堅果種子、全穀、豆類等富含鎂的食材與飲食重點。", "c": "文章"}, {"t": "鎂與「放鬆」：研究現況與飲食重點", "u": "blog-magnesium-relax.html", "d": "鎂常在放鬆、睡眠話題被討論。本文中性說明鎂的營養角色、研究現況與飲食來源，不作功效宣稱。", "c": "文章"}, {"t": "鎂怎麼選？氧化鎂、檸檬酸鎂、甘胺酸鎂差別", "u": "blog-magnesium-types.html", "d": "市售鎂有很多種型式。本文比較氧化鎂、檸檬酸鎂、甘胺酸鎂等常見鎂型式的差異與選購重點。", "c": "文章"}, {"t": "礦物質是什麼？常見保健礦物質一次看", "u": "blog-mineral-basics.html", "d": "礦物質是人體必需的營養素。本文介紹常見的鈣、鎂、鋅等礦物質的角色與食物來源。", "c": "文章"}, {"t": "睡前放鬆儀式怎麼建立？建立規律作息的小習慣", "u": "blog-night-routine.html", "d": "想睡得更規律，可以從建立睡前儀式開始。本文分享建立放鬆習慣與規律作息的生活方式建議。", "c": "文章"}, {"t": "「營養宣稱」與「營養素功能宣稱」差在哪？", "u": "blog-nutrition-claim-types.html", "d": "食品標示常見「高鈣」「有助於骨骼健康」等用語，這些屬於不同類型的宣稱。本文說明營養宣稱與營養素功能宣稱的差別。", "c": "文章"}, {"t": "現代人營養缺口：外食族最容易缺什麼？", "u": "blog-nutrition-gap.html", "d": "外食、忙碌與飲食不均，使現代人容易缺乏膳食纖維、維生素與礦物質。本文解析常見營養缺口與補充方式。", "c": "文章"}, {"t": "保健食品代工費用怎麼算？成本結構解析", "u": "blog-oem-cost.html", "d": "保健食品代工費用包含配方研發、原料、生產、包裝與檢驗等。本文解析代工成本結構與影響報價的因素。", "c": "文章"}, {"t": "保健食品代工最少量(MOQ)是多少？影響因素整理", "u": "blog-oem-moq.html", "d": "保健食品 OEM／ODM 的最少起訂量(MOQ)是多少？本文說明影響 MOQ 與報價的因素，以及如何開始洽談。", "c": "文章"}, {"t": "OEM 與 ODM 差異一次搞懂", "u": "blog-oem-odm.html", "d": "OEM 是品牌方提供配方由代工廠生產；ODM 是代工廠協助設計研發到生產。本文比較兩者差異與適合對象。", "c": "文章"}, {"t": "保健食品包裝與標示重點：OEM 開發必看", "u": "blog-oem-packaging.html", "d": "保健食品的包裝與標示有哪些重點？本文整理品名、營養標示、成分、警語與合規要點，OEM 開發必看。", "c": "文章"}, {"t": "上班族營養補充指南：忙碌也能顧健康", "u": "blog-office-nutrition.html", "d": "工作忙、外食多，上班族怎麼補營養？本文整理上班族常見的營養缺口與方便的補充方式。", "c": "文章"}, {"t": "Omega-3 是什麼？魚油與 DHA、EPA 一次看", "u": "blog-omega3-basics.html", "d": "Omega-3 是什麼？介紹 DHA、EPA、ALA 的來源、食物與素食藻油選擇。", "c": "文章"}, {"t": "益生菌怎麼挑？菌數、菌株與保存重點", "u": "blog-probiotics-pick.html", "d": "益生菌怎麼挑？說明菌數(CFU)、菌株標示、保存與配方搭配的選購重點。", "c": "文章"}, {"t": "益生菌保健食品開發重點：菌數與配方關鍵", "u": "blog-probiotics.html", "d": "益生菌保健食品需注意菌種、菌數、包埋技術與保存穩定性。本文解析益生菌產品開發重點。", "c": "文章"}, {"t": "看懂保健食品標示：成分、含量與警語怎麼讀", "u": "blog-read-supplement-label.html", "d": "挑選保健食品前，學會看懂標示。本文教你讀懂成分名稱、每份含量、營養素功能宣稱與注意事項警語。", "c": "文章"}, {"t": "看懂保健食品成分表：排序與含量怎麼讀", "u": "blog-reading-ingredient-list.html", "d": "保健食品的成分表怎麼看？本文說明成分排序、每份含量、複方與單方的差別，幫你買得明白。", "c": "文章"}, {"t": "銀髮族營養補充：長輩最需要注意的關鍵營養", "u": "blog-senior-nutrition.html", "d": "銀髮族常需注意蛋白質、鈣質、維生素D、膳食纖維與好吞嚥的劑型。本文整理長輩營養補充重點。", "c": "文章"}, {"t": "運動營養入門：運動前中後怎麼補", "u": "blog-sports-nutrition-basics.html", "d": "運動營養怎麼補？整理運動前中後的營養與水分觀念，以及常見胺基酸補充。", "c": "文章"}, {"t": "血糖試紙保存方式：正確保存確保測量準確", "u": "blog-strip-storage.html", "d": "血糖試紙應存放於陰涼乾燥處、避免陽光與潮濕、用後立即蓋緊瓶蓋並在效期內使用。本文解析正確保存方式。", "c": "文章"}, {"t": "保健食品新手入門：怎麼開始、怎麼挑", "u": "blog-supplement-beginners.html", "d": "第一次吃保健食品該怎麼開始？本文整理新手的基本觀念：先檢視飲食、看標示、依需求選擇、注意用藥。", "c": "文章"}, {"t": "保健食品可以一起吃嗎？常見搭配與錯開原則", "u": "blog-supplement-combo.html", "d": "多種保健食品可以一起吃嗎？整理常見搭配（鈣D3K2）、需錯開的組合與服藥注意。", "c": "文章"}, {"t": "保健食品與藥物會交互作用嗎？常見注意整理", "u": "blog-supplement-drug-interaction.html", "d": "保健食品與藥物可能產生交互作用。本文整理常見的注意情境，並提醒服藥者補充前應諮詢專業人員。", "c": "文章"}, {"t": "保健食品常見迷思：越貴越好？吃越多越有效？", "u": "blog-supplement-myths.html", "d": "關於保健食品有不少迷思。本文釐清常見誤解：越貴越好、吃越多越有效、能取代正餐等。", "c": "文章"}, {"t": "保健食品怎麼保存才安心？劑型保存重點", "u": "blog-supplement-storage.html", "d": "保健食品怎麼保存？本文整理錠劑膠囊、粉末、晶凍等不同劑型的保存方式與開封後注意。", "c": "文章"}, {"t": "保健食品什麼時候吃最好？飯前飯後與搭配重點", "u": "blog-supplement-timing.html", "d": "保健食品該飯前還飯後吃？本文說明脂溶性與水溶性營養素的食用時機、常見搭配與注意事項。", "c": "文章"}, {"t": "保健食品劑型比較：晶凍、膠囊、錠劑、粉包怎麼選？", "u": "blog-supplement-types.html", "d": "保健食品常見劑型包含晶凍、膠囊、錠劑、粉包與液體。本文比較各劑型優缺點與適合情境。", "c": "文章"}, {"t": "酸櫻桃是什麼？和甜櫻桃差在哪", "u": "blog-tart-cherry-intro.html", "d": "酸櫻桃（tart cherry）是什麼？和一般甜櫻桃有何不同？本文介紹酸櫻桃萃取物的來源、花青素特性與注意事項。", "c": "文章"}, {"t": "茶胺酸是什麼？L-Theanine 的來源與和 GABA 的差別", "u": "blog-theanine.html", "d": "茶胺酸（L-Theanine）是茶葉中的胺基酸。本文介紹茶胺酸的來源、特性、與 GABA 的差別與注意事項。", "c": "文章"}, {"t": "發燒幾度算發燒？體溫量測完整說明", "u": "blog-thermometer-fever.html", "d": "一般成人耳溫或額溫超過 38°C 多視為發燒。本文說明各部位體溫標準與量測注意事項。", "c": "文章"}, {"t": "體溫計種類比較：耳溫、額溫、口溫怎麼選？", "u": "blog-thermometer.html", "d": "體溫計分為耳溫槍、額溫槍、口溫/腋溫電子體溫計等。本文比較各類型優缺點與適合使用情境。", "c": "文章"}, {"t": "外出與旅行怎麼補營養？方便攜帶的選擇", "u": "blog-travel-nutrition.html", "d": "旅行外出怎麼維持營養？整理方便攜帶、免配水的補充方式與打包提醒。", "c": "文章"}, {"t": "素食者較需留意的關鍵營養：B12、鐵、鋅、鈣、D", "u": "blog-vegan-key-nutrients.html", "d": "素食飲食較需留意哪些營養？整理 B12、鐵、鋅、鈣、維生素D 的來源與補足方式。", "c": "文章"}, {"t": "素食者的蛋白質與胺基酸怎麼補？", "u": "blog-vegan-protein.html", "d": "素食者如何攝取足夠蛋白質與胺基酸？本文整理植物性蛋白來源與胺基酸互補的飲食重點。", "c": "文章"}, {"t": "純素保健食品怎麼挑？素食者選購重點", "u": "blog-vegan-supplement.html", "d": "素食者挑選保健食品要注意什麼？本文整理純素保健食品的常見來源、需留意的成分與選購重點。", "c": "文章"}, {"t": "維生素C 與膠原蛋白的關係：為什麼一起被討論？", "u": "blog-vitamin-c-collagen.html", "d": "維生素C 與膠原蛋白常被一起提到。本文說明維生素C 在膠原蛋白形成中的營養角色與飲食重點。", "c": "文章"}, {"t": "維生素C 一天吃多少？來源、攝取與注意事項", "u": "blog-vitamin-c-daily.html", "d": "維生素C 一天該攝取多少？本文整理維生素C 的營養角色、食物來源、攝取重點與過量提醒。", "c": "文章"}, {"t": "維生素D 的 IU 與微克(µg) 怎麼換算？", "u": "blog-vitamin-d-iu.html", "d": "維生素D 標示常見 IU 與微克兩種單位。本文說明 1µg=40IU 的換算，以及比較產品時的注意。", "c": "文章"}, {"t": "維生素D 攝取不足？日曬與飲食補充重點", "u": "blog-vitamin-d-tips.html", "d": "現代人常維生素D 攝取不足。本文整理維生素D 的日曬與食物來源、µg 與 IU 單位換算與補充提醒。", "c": "文章"}, {"t": "素食者怎麼補維生素D？地衣D3 與日曬重點", "u": "blog-vitamin-d-vegan.html", "d": "素食者如何補充維生素D？本文說明素食可用的維生素D 來源（地衣D3、植物D2、強化食品）與日曬重點。", "c": "文章"}, {"t": "維生素E 是什麼？抗氧化營養角色與食物", "u": "blog-vitamin-e.html", "d": "維生素E 是什麼？介紹營養角色（抗氧化）、食物來源與補充注意。", "c": "文章"}, {"t": "女性日常營養怎麼補？常見需求與保健重點", "u": "blog-women-nutrition.html", "d": "女性在不同階段有不同營養需求。本文整理女性常被討論的營養（鈣、鎂、鐵、維生素D 等）與日常補充重點。", "c": "文章"}, {"t": "鋅的食物有哪些？補鋅來源與素食者注意", "u": "blog-zinc-food.html", "d": "鋅是人體必需微量礦物質。本文整理富含鋅的食物、素食者補鋅注意與補充提醒。", "c": "文章"}, {"t": "鋅與免疫：營養角色與食物來源", "u": "blog-zinc-immune.html", "d": "鋅常在免疫話題被討論。依台灣公告之功能宣稱，鋅有助於維持正常免疫功能。本文整理鋅的角色與食物來源。", "c": "文章"}, {"t": "美妝保養代理", "u": "beauty.html", "d": "愷樂生醫美妝保養代理，提供 FORA PROJ 系列保養品：防曬乳、精華液、緊緻乳霜、保濕乳、化妝水與潔顏慕斯等，歡迎洽", "c": "產品"}, {"t": "FORA 福爾醫療器材授權經銷", "u": "fora.html", "d": "FORA 福爾醫療器材授權經銷，提供血糖機、血壓計、體溫計、血糖試紙等居家健康監測設備，協助慢性病照護與居家健康管理。愷", "c": "產品"}, {"t": "GABA鈣鎂晶凍", "u": "gaba.html", "d": "愷樂生醫 GABA鈣鎂晶凍，每包含鈣150mg、鎂30mg、維生素D3/K2/C，並複方添加 GABA、色胺酸、茶胺酸、", "c": "產品"}, {"t": "左旋麩醯胺酸晶凍", "u": "glutamic.html", "d": "愷樂生醫 左旋麩醯胺酸晶凍，每包含左旋麩醯胺酸1.5g、維生素C 50mg、鋅2.6mg，並添加鳳梨酵素與綠茶萃取物（兒", "c": "產品"}, {"t": "IM8 全方位營養補充", "u": "im8.html", "d": "IM8 是愷樂生醫代理的旗艦營養品牌，以營養科學為基礎的全方位配方，單包沖飲、30 秒完成，協助忙碌現代人、外食族與銀髮", "c": "產品"}, {"t": "晶凍健康食品 OEM/ODM代工", "u": "jelly.html", "d": "晶凍健康食品事業提供保健食品 OEM 代工、ODM 開發、品牌合作與配方設計服務，協助品牌從配方研發到量產上市一站完成。", "c": "產品"}, {"t": "關於愷樂生醫", "u": "about.html", "d": "愷樂生醫有限公司（統編 60417821）為台灣健康食品與健康照護設備專家，旗下擁有晶凍健康食品事業與 FORA 醫療器", "c": "頁面"}, {"t": "健康知識中心", "u": "blog.html", "d": "愷樂生醫健康知識中心，提供晶凍與保健食品代工、IM8 營養補充、血糖機血壓計選購與居家健康監測等專業知識文章，協助您做出", "c": "頁面"}, {"t": "保健食品劑型比較中心：晶凍/膠囊/錠劑/粉末/液態", "u": "dosage-forms.html", "d": "保健食品有晶凍、膠囊、錠劑、粉末、液態等劑型。本中心客觀比較各劑型的食用方式、攜帶性、便利性、使用情境與保存，協助你依需", "c": "頁面"}, {"t": "常見問題 FAQ 中心", "u": "faq.html", "d": "愷樂生醫常見問題中心：涵蓋晶凍健康食品 OEM/ODM 代工、IM8 營養補充、FORA 血糖機血壓計選購與使用、慢性病", "c": "頁面"}, {"t": "完整選購指南", "u": "guide.html", "d": "愷樂生醫完整選購指南：血糖機完整選購指南、血壓計完整選購指南、晶凍保健食品代工完整指南、保健食品品牌創業指南。提供專業、", "c": "頁面"}, {"t": "愷樂生醫有限公司", "u": "index.html", "d": "愷樂生醫有限公司（Cash Biomedical CO., LTD.）是專業晶凍健康食品品牌，自有 GABA 鈣鎂晶凍、", "c": "頁面"}, {"t": "OEM／ODM 代工知識中心：流程、MOQ、交期、法規 FAQ", "u": "oem-guide.html", "d": "保健食品 OEM／ODM 代工怎麼開始？本中心整理 OEM 與 ODM 差異、開發流程、MOQ、交期、法規、包裝與檢驗等", "c": "頁面"}, {"t": "隱私權政策", "u": "privacy.html", "d": "愷樂生醫有限公司網站隱私權政策，說明個人資料之蒐集、使用、保護與您的權利。", "c": "頁面"}, {"t": "服務條款", "u": "terms.html", "d": "愷樂生醫有限公司網站服務條款，說明網站使用規範與相關權利義務。", "c": "頁面"}];
+const q=document.getElementById('q'), results=document.getElementById('results'), countEl=document.getElementById('count'), empty=document.getElementById('empty');
+let cat='';
+function render(){
+  const kw=(q.value||'').trim().toLowerCase();
+  let list=DATA.filter(x=>(!cat||x.c===cat));
+  if(kw) list=list.filter(x=>(x.t+' '+x.d).toLowerCase().includes(kw));
+  results.innerHTML='';
+  if(!list.length){empty.classList.remove('hidden');countEl.textContent='';return;}
+  empty.classList.add('hidden');
+  countEl.textContent='共 '+list.length+' 筆'+(kw?(' ・ 關鍵字「'+q.value.trim()+'」'):'');
+  const frag=document.createDocumentFragment();
+  list.slice(0,80).forEach(x=>{
+    const li=document.createElement('li');
+    li.className='feature-card rounded-xl p-4 block';
+    li.innerHTML='<a href="'+x.u+'" class="block group"><span class="text-[11px] font-bold text-accent">'+x.c+'</span><h3 class="font-bold text-sm mt-0.5 group-hover:text-primary transition-colors">'+x.t+'</h3>'+(x.d?'<p class="text-xs text-ink/55 mt-1 leading-relaxed">'+x.d+'…</p>':'')+'</a>';
+    frag.appendChild(li);
+  });
+  results.appendChild(frag);
+}
+document.querySelectorAll('.fbtn').forEach(b=>b.addEventListener('click',()=>{
+  cat=b.dataset.c;
+  document.querySelectorAll('.fbtn').forEach(x=>{x.className='fbtn text-xs font-bold px-3 py-1.5 rounded-full bg-accent/10 text-ink/70';});
+  b.className='fbtn text-xs font-bold px-3 py-1.5 rounded-full bg-primary text-white';
+  render();
+}));
+q.addEventListener('input',render);
+const params=new URLSearchParams(location.search); if(params.get('q')){q.value=params.get('q');}
+render();
+</script>
+</body>
+</html>
