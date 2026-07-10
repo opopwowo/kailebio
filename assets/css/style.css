@@ -375,3 +375,6 @@ body{
 }
 .scroll-down-bounce{animation:scrollBounce 2s ease-in-out infinite}
 @keyframes scrollBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+.spec-img{width:100%;height:22rem;object-fit:contain;background:#fff;border-radius:1rem;padding:.5rem;}
+@media(max-width:768px){.spec-img{height:18rem;}}
