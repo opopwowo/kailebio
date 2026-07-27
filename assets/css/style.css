@@ -29,6 +29,9 @@ body{
 .top-bar a:hover{
   color:var(--color-accent);
 }
+/* 移除頂部業務資訊列：隱藏 top bar，導覽列上移至頁面最頂 */
+#top-bar{ display:none !important; }
+.nav-blur{ top:0 !important; }
 
 /* ---------- Gold sheen sections ---------- */
 .section-gold{
