@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://case-55.opopwowo.workers.dev/sitemap.xml
+Sitemap: https://cash-bio.com/sitemap.xml

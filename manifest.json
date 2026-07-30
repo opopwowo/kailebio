@@ -1,0 +1,13 @@
+{
+  "name": "愷樂生醫有限公司 Cash Biomedical",
+  "short_name": "愷樂生醫",
+  "description": "專業晶凍健康食品品牌：GABA 鈣鎂晶凍、左旋麩醯胺酸晶凍、樂暢適晶凍，結合 FORA 醫療器材與美妝保養。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F6EFDC",
+  "theme_color": "#7A1024",
+  "icons": [
+    { "src": "/assets/img/logo.jpg", "sizes": "512x512", "type": "image/jpeg", "purpose": "any" },
+    { "src": "/assets/img/logo.jpg", "sizes": "192x192", "type": "image/jpeg", "purpose": "any" }
+  ]
+}
