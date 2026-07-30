@@ -181,6 +181,20 @@
 <body class="bg-ivory text-ink antialiased">
 
 <!-- ============ TOP BUSINESS BAR ============ -->
+<div id="top-bar" class="fixed top-0 left-0 right-0 z-[60] top-bar text-xs md:text-sm">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 h-9 md:h-10 flex items-center justify-between gap-4 overflow-x-auto whitespace-nowrap">
+    <div class="flex items-center gap-4 md:gap-6">
+      <span class="hidden sm:inline opacity-90">愷樂生醫有限公司｜統編 60417821</span>
+      <span class="hidden sm:inline opacity-90">游先生．業務經理</span>
+      <a href="tel:0963339098" class="font-bold transition-colors">📞 0963-339-098</a>
+      <a href="https://line.me/ti/p/petuUoEm_w" target="_blank" rel="noopener" class="font-bold transition-colors">💬 LINE</a>
+      <a href="mailto:lawrenceyu911@gmail.com" class="font-medium transition-colors hidden md:inline">✉ lawrenceyu911@gmail.com</a>
+      <span class="hidden lg:inline opacity-90">📍 新北市中和區景平路268號8樓之5</span>
+    </div>
+    <a href="#contact" class="font-bold text-accent hover:text-white transition-colors flex-shrink-0">立即諮詢 →</a>
+  </div>
+</div>
+
 <!-- ============ NAV（一頁式，連結全部展開、不藏選單） ============ -->
 <header id="site-nav" class="fixed top-9 md:top-10 left-0 right-0 z-50 nav-blur transition-shadow duration-300">
   <div class="max-w-7xl mx-auto px-4 md:px-6 lg:px-10 h-16 md:h-20 flex items-center justify-between gap-4">
@@ -207,56 +221,45 @@
   </nav>
 </header>
 
-<!-- ============ SECTION 1：HERO（自動輪播宣傳動畫） ============ -->
-<section id="top" class="promo-hero">
-  <div class="promo-orbs" aria-hidden="true"><span class="o1"></span><span class="o2"></span><span class="o3"></span></div>
-  <div class="promo-grain" aria-hidden="true"></div>
-
-  <div class="promo-inner">
-    <div class="promo-copy">
-      <div class="promo-progress" id="promo-progress" aria-hidden="true">
-        <div class="bar"><i></i></div><div class="bar"><i></i></div>
+<!-- ============ SECTION 1：HERO（晶凍健康食品品牌主定位） ============ -->
+<section id="top" class="relative hero-bg min-h-screen flex items-center pt-40 md:pt-44 pb-16 overflow-hidden">
+  <div class="absolute inset-0 -z-10 opacity-50">
+    <div class="absolute top-1/4 right-[8%] w-72 h-72 rounded-full bg-accent/10 blur-3xl hero-float"></div>
+    <div class="absolute bottom-10 left-[6%] w-80 h-80 rounded-full bg-primary/10 blur-3xl hero-float" style="animation-delay:1.5s"></div>
+  </div>
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 grid lg:grid-cols-2 gap-12 lg:gap-16 items-stretch w-full">
+    <div class="reveal flex flex-col">
+      <p class="uppercase tracking-[0.25em] text-accent text-xs md:text-sm font-medium mb-4">愷樂生醫 CASH BIOMEDICAL</p>
+      <h1 class="font-serif-tc text-4xl md:text-6xl font-bold leading-[1.2] mb-5">專業<span class="text-primary">晶凍健康食品</span>品牌</h1>
+      <p class="text-base md:text-lg text-ink/70 leading-relaxed mb-4 max-w-md">自有 <span class="font-bold text-primary">GABA 鈣鎂晶凍、左旋麩醯胺酸晶凍與樂暢適晶凍</span>，並結合福爾 FORA 晶凍與膠原蛋白系列——打造好入口、好攜帶、容易持續的健康補充。</p>
+      <p class="text-xs md:text-sm text-ink/50 mb-8 max-w-md border-l-2 border-accent/50 pl-3 italic">愷樂生醫以晶凍健康食品為核心，結合福爾 FORA 晶凍與膠原蛋白系列，以及居家健康監測產品線。</p>
+      <div class="flex flex-wrap gap-3 md:gap-4 hero-cta-bottom">
+        <a href="#jelly" class="btn-primary px-7 py-3.5 rounded-full text-sm md:text-base">看晶凍產品</a>
+        <a href="ingredients/index.html" class="btn-outline px-7 py-3.5 rounded-full text-sm md:text-base">成分知識中心</a>
+        <a href="https://line.me/ti/p/petuUoEm_w" target="_blank" rel="noopener" class="inline-flex items-center px-7 py-3.5 rounded-full text-sm md:text-base font-medium bg-[#06C755] text-white hover:opacity-90 transition-opacity">加入 LINE</a>
       </div>
-      <p class="promo-eyebrow">愷樂生醫 CASH BIOMEDICAL ・ 晶凍健康食品品牌</p>
-      <h1 class="promo-h1">撕開就吃、免配水的<br><span class="hl">晶凍健康食品</span></h1>
-
-      <div class="promo-scenecopy">
-        <span class="promo-badge" data-promo="badge">夜間 · 鈣鎂營養</span>
-        <p class="promo-pname" data-promo="name">GABA 鈣鎂晶凍</p>
-        <p class="promo-ptag" data-promo="tag">睡前的放鬆儀式 × 日常鈣鎂營養補充 —— 純素、幾乎無糖、晶凍好入口。</p>
-      </div>
-
-      <div class="promo-chips" data-promo="chips"></div>
-
-      <div class="promo-cta">
-        <a href="#jelly" class="promo-btn p1">看晶凍產品</a>
-        <a href="ingredients/index.html" class="promo-btn p2">成分知識中心</a>
-        <a href="https://line.me/ti/p/petuUoEm_w" target="_blank" rel="noopener" class="promo-btn line">加入 LINE</a>
-      </div>
-
-      <div class="promo-dots" id="promo-dots" role="tablist" aria-label="產品輪播"></div>
     </div>
-
-    <div class="promo-stage" id="promo-stage">
-      <div class="promo-halo" aria-hidden="true"></div>
-      <div class="promo-scene is-active" data-scene="0">
-        <div class="promo-prod"><img src="assets/img/products/gaba/gaba-box.jpg" alt="GABA 鈣鎂晶凍" width="300" height="400"></div>
-        <span class="promo-fchip" style="top:5%;left:-2%">😴 GABA 助放鬆</span>
-        <span class="promo-fchip" style="top:27%;right:-3%">鈣 150mg</span>
-        <span class="promo-fchip" style="bottom:22%;left:-5%">鎂 30mg</span>
-        <span class="promo-fchip" style="bottom:4%;right:3%">幾乎無糖</span>
-      </div>
-      <div class="promo-scene" data-scene="1">
-        <div class="promo-prod"><img src="assets/img/products/glutamic/glutamic-box.jpg" alt="左旋麩醯胺酸晶凍" width="300" height="400"></div>
-        <span class="promo-fchip" style="top:5%;right:-2%">💪 運動後補給</span>
-        <span class="promo-fchip" style="top:27%;left:-3%">左旋麩醯胺酸 1.5g</span>
-        <span class="promo-fchip" style="bottom:22%;right:-5%">PUREWAY-C®</span>
-        <span class="promo-fchip" style="bottom:4%;left:3%">鋅 2.6mg</span>
+    <!-- 業務資訊卡 + 快速結論 -->
+    <div class="flex flex-col gap-6 max-w-sm lg:ml-auto w-full">
+      <div class="reveal reveal-delay-3 summary-card relative overflow-hidden flex-1 bg-white/80 backdrop-blur-sm rounded-2xl border border-accent/25 shadow-lg p-7">
+        <p class="uppercase tracking-[0.22em] text-accent text-[11px] font-semibold mb-3 flex items-center gap-2"><span class="w-5 h-px bg-accent/60"></span>AI SUMMARY ・ 快速結論</p>
+        <p class="text-[15px] text-ink/80 leading-[1.85] mb-5"><span class="font-bold text-primary">愷樂生醫</span>是專業<span class="font-bold">晶凍健康食品品牌</span>，自有 GABA 鈣鎂晶凍、左旋麩醯胺酸晶凍與樂暢適晶凍，並結合福爾 FORA 晶凍與膠原蛋白系列。</p>
+        <div class="h-px bg-accent/20 mb-5"></div>
+        <ul class="space-y-3 text-sm text-ink/75">
+          <li class="flex items-center gap-3"><span class="w-5 h-5 rounded-full bg-accent/15 text-accent flex items-center justify-center flex-shrink-0 text-[11px] font-bold">✓</span>自有晶凍：GABA 鈣鎂・左旋麩醯胺酸・樂暢適</li>
+          <li class="flex items-center gap-3"><span class="w-5 h-5 rounded-full bg-accent/15 text-accent flex items-center justify-center flex-shrink-0 text-[11px] font-bold">✓</span>純素、幾乎無糖、好入口的晶凍劑型</li>
+          <li class="flex items-center gap-3"><span class="w-5 h-5 rounded-full bg-accent/15 text-accent flex items-center justify-center flex-shrink-0 text-[11px] font-bold">✓</span>福爾 FORA 晶凍・膠原蛋白系列</li>
+          <li class="flex items-center gap-3"><span class="w-5 h-5 rounded-full bg-accent/15 text-accent flex items-center justify-center flex-shrink-0 text-[11px] font-bold">✓</span>完整成分知識中心（12 種成分百科）</li>
+          <li class="flex items-center gap-3"><span class="w-5 h-5 rounded-full bg-accent/15 text-accent flex items-center justify-center flex-shrink-0 text-[11px] font-bold">✓</span>合法登記・3 大營業資格</li>
+          <li class="flex items-center gap-3"><span class="w-5 h-5 rounded-full bg-accent/15 text-accent flex items-center justify-center flex-shrink-0 text-[11px] font-bold">✓</span>新北中和・全台服務</li>
+        </ul>
       </div>
     </div>
   </div>
-
-  <a href="#jelly" aria-label="向下捲動" class="promo-scroll"><span>SCROLL</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg></a>
+  <a href="#jelly" aria-label="向下捲動" class="scroll-down-arrow absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-primary/60 hover:text-primary transition-colors">
+    <span class="text-[10px] tracking-[0.2em] uppercase">SCROLL</span>
+    <svg class="w-5 h-5 scroll-down-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+  </a>
 </section>
 
 <!-- ============ 產品系列一覽表（Hero 下方） ============ -->
