@@ -19,3 +19,6 @@ launch.json
 !.dev.vars.example
 .env*
 !.env.example
+
+# node deps (local tooling for screenshots — not part of site)
+node_modules/
