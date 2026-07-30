@@ -164,4 +164,50 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeLb(); });
   }
+
+  /* ---------- 高級感微動效層（附加式，不改內容/版面） ---------- */
+  (function () {
+    var RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var nav = document.getElementById('site-nav');
+    if (nav) {
+      var navTop = function () { nav.classList.toggle('nav-top', (window.scrollY || 0) <= 40); };
+      navTop();
+      window.addEventListener('scroll', navTop, { passive: true });
+    }
+    if (RM) return;
+    var hoverFine = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+    document.querySelectorAll('.hero-bg').forEach(function (hero) {
+      var content = hero.querySelector(':scope > [class*="max-w-"]');
+      if (content) { content.style.position = 'relative'; content.style.zIndex = '1'; }
+      var light = document.createElement('div');
+      light.className = 'kb-light'; light.setAttribute('aria-hidden', 'true');
+      hero.insertBefore(light, hero.firstChild);
+      var dust = document.createElement('div');
+      dust.className = 'kb-dust'; dust.setAttribute('aria-hidden', 'true');
+      for (var i = 0; i < 10; i++) {
+        var b = document.createElement('b'); var s = 1 + Math.random() * 2.4;
+        b.style.width = s + 'px'; b.style.height = s + 'px';
+        b.style.left = (Math.random() * 100) + '%'; b.style.top = (Math.random() * 100) + '%';
+        b.style.setProperty('--d', (12 + Math.random() * 10) + 's');
+        b.style.setProperty('--dl', (Math.random() * 9) + 's');
+        b.style.setProperty('--dx', ((Math.random() * 40) - 20).toFixed(0) + 'px');
+        b.style.setProperty('--dy', (-28 - Math.random() * 40).toFixed(0) + 'px');
+        dust.appendChild(b);
+      }
+      hero.insertBefore(dust, hero.firstChild);
+      if (hoverFine) {
+        hero.addEventListener('mousemove', function (e) {
+          var r = hero.getBoundingClientRect();
+          var px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
+          dust.style.transform = 'translate(' + (px * 8).toFixed(1) + 'px,' + (py * 6).toFixed(1) + 'px)';
+        });
+        hero.addEventListener('mouseleave', function () { dust.style.transform = ''; });
+      }
+    });
+    // 產品海報浮動（產品頁主圖，像素完全不動，只做整體浮動）
+    var poster = document.querySelector('.hero-bg img.zoomable');
+    if (poster) poster.classList.add('kb-float');
+    document.querySelectorAll('.spec-img').forEach(function (img) { img.classList.add('kb-float'); });
+  })();
+
 });

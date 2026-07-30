@@ -381,3 +381,38 @@ body{
 
 .spec-img{width:100%;height:22rem;object-fit:contain;background:#fff;border-radius:1rem;padding:.5rem;}
 @media(max-width:768px){.spec-img{height:18rem;}}
+
+
+/* ============ 高級感微動效層（附加式；不更動版面、顏色、字體、內容、產品圖） ============ */
+/* 卡片：懸浮微升 + 描邊光暈 */
+.feature-card{transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s ease,border-color .5s ease;}
+.feature-card:hover{transform:translateY(-4px);box-shadow:0 26px 52px -24px rgba(122,16,36,.30);border-color:rgba(200,162,77,.5);}
+/* 主要按鈕：hover 微放大 */
+.btn-primary:hover{transform:translateY(-2px) scale(1.02);}
+/* 導覽列：頂部半透明 → 捲動後轉為實心 */
+#site-nav{transition:background .45s ease,box-shadow .45s ease;}
+#site-nav.nav-top{background:linear-gradient(135deg,rgba(255,253,246,.55),rgba(246,233,196,.42));box-shadow:none;}
+
+@media (prefers-reduced-motion: no-preference){
+  /* Hero 進場：整體淡入 + 內容輕升（GPU transform，無版面位移） */
+  .hero-bg{animation:kb-heroFade 1.4s ease-out both;}
+  @keyframes kb-heroFade{from{opacity:0;}to{opacity:1;}}
+  .hero-bg > [class*="max-w-"]{animation:kb-heroRise 1.5s cubic-bezier(.16,1,.3,1) both;}
+  @keyframes kb-heroRise{from{transform:translateY(12px) scale(.985);}to{transform:none;}}
+  /* 產品海報：極輕微浮動 */
+  .kb-float{animation:kb-float 8s ease-in-out infinite;will-change:transform;}
+  @keyframes kb-float{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+  /* 暖陽光暈：18s 緩慢掃過一次（幾乎不察覺） */
+  .kb-light{position:absolute;top:-30%;bottom:-30%;left:-25%;width:55%;z-index:0;pointer-events:none;
+    background:radial-gradient(closest-side,rgba(255,214,150,.20),transparent 72%);filter:blur(48px);
+    opacity:0;animation:kb-light 18s ease-in-out infinite;}
+  @keyframes kb-light{0%{opacity:0;transform:translateX(-20%);}42%,58%{opacity:.72;}100%{opacity:0;transform:translateX(185%);}}
+  /* 微塵（透明度 < 0.08） */
+  .kb-dust{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+  .kb-dust b{position:absolute;display:block;border-radius:50%;background:#fff7e8;opacity:0;
+    animation:kb-dust var(--d,16s) linear var(--dl,0s) infinite;}
+  @keyframes kb-dust{0%{opacity:0;transform:translate(0,0);}18%{opacity:.07;}82%{opacity:.045;}100%{opacity:0;transform:translate(var(--dx,10px),var(--dy,-42px));}}
+  /* 捲動揭示：加入極淡模糊，收斂更細緻 */
+  .reveal{filter:blur(5px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1),filter .9s ease;}
+  .reveal.is-visible{filter:blur(0);}
+}
