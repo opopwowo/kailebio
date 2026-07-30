@@ -427,3 +427,32 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .skip-link{position:absolute;left:8px;top:-48px;z-index:200;background:var(--color-primary);color:#fff;
   padding:10px 18px;border-radius:0 0 10px 10px;font-size:14px;font-weight:700;transition:top .2s ease;text-decoration:none;}
 .skip-link:focus{top:0;}
+
+/* ============ CRO：首屏信任帶 + 手機常駐 CTA ============ */
+.cro-trust{background:linear-gradient(90deg,#fbf3e0,#f4e7c8);border-top:1px solid rgba(200,162,77,.35);border-bottom:1px solid rgba(200,162,77,.35);}
+.cro-trust ul{max-width:80rem;margin:0 auto;padding:12px 16px;display:flex;flex-wrap:wrap;gap:10px 22px;justify-content:center;list-style:none;font-size:13.5px;color:#5c1a2b;font-weight:600;}
+.cro-trust li{display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.cro-cta{position:fixed;left:0;right:0;bottom:0;z-index:80;display:none;background:#fff;border-top:1px solid rgba(200,162,77,.4);box-shadow:0 -6px 20px -8px rgba(0,0,0,.18);}
+.cro-cta a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:9px 4px;font-size:12px;font-weight:700;text-decoration:none;color:#5c1a2b;}
+.cro-cta a .ic{font-size:18px;line-height:1;}
+.cro-cta a.line{background:#06C755;color:#fff;}
+.cro-cta a.ask{background:var(--color-primary);color:#fff;}
+@media(max-width:767px){
+  .cro-cta{display:flex;}
+  body{padding-bottom:60px;}
+  .fixed.bottom-6.right-6 > a{display:none;}     /* 收起重複的浮動 LINE/電話 */
+  .fixed.bottom-6.right-6{bottom:72px;}          /* 回頂鈕移到 CTA 列上方 */
+}
+
+/* ============ 導覽列改為品牌紅（文字轉白/金以確保對比） ============ */
+.nav-blur{background:linear-gradient(135deg, rgba(122,16,36,.97) 0%, rgba(92,10,27,.97) 100%);}
+#site-nav.nav-top{background:linear-gradient(135deg, rgba(122,16,36,.9), rgba(92,10,27,.88));box-shadow:none;}
+#site-nav{border-bottom:1px solid rgba(200,162,77,.35);}
+#site-nav nav{border-top-color:rgba(255,255,255,.14)!important;}
+#site-nav .font-serif-tc{color:#ffffff;}                 /* logo：愷樂生醫 → 白 */
+#site-nav .nav-link{color:#fbeede;}                       /* 選單文字 → 米白 */
+#site-nav .nav-link:hover{color:#ffffff;}
+#site-nav .nav-link.text-primary{color:var(--color-accent);}  /* 目前頁 → 金色 */
+#site-nav .nav-link::after{background:var(--color-accent);}
+#site-nav .btn-primary{background:var(--color-accent);color:#4d0a1a;}   /* 立即諮詢 → 金底深字 */
+#site-nav .btn-primary:hover{background:#e0b95e;color:#4d0a1a;box-shadow:0 12px 24px -10px rgba(0,0,0,.4);}
