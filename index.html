@@ -227,10 +227,19 @@
 </header>
 
 <!-- ============ SECTION 1：HERO（晶凍健康食品品牌主定位） ============ -->
-<section id="top" class="relative hero-bg min-h-screen flex items-center pt-40 md:pt-44 pb-16 overflow-hidden">
+<section id="top" class="relative hero-bg pt-28 md:pt-32 pb-14 overflow-hidden">
   <div class="absolute inset-0 -z-10 opacity-50">
     <div class="absolute top-1/4 right-[8%] w-72 h-72 rounded-full bg-accent/10 blur-3xl hero-float"></div>
     <div class="absolute bottom-10 left-[6%] w-80 h-80 rounded-full bg-primary/10 blur-3xl hero-float" style="animation-delay:1.5s"></div>
+  </div>
+  <!-- 全寬品牌影片橫幅（首頁最上方） -->
+  <div class="reveal w-full mb-10 md:mb-14">
+    <video class="w-full h-auto block" width="1280" height="720"
+           autoplay muted loop playsinline preload="metadata"
+           poster="assets/img/home-hero-poster.jpg" controls>
+      <source src="assets/video/home-hero.mp4" type="video/mp4">
+      您的瀏覽器不支援影片播放，<a href="assets/video/home-hero.mp4" class="text-primary underline">點此觀看影片</a>。
+    </video>
   </div>
   <div class="max-w-7xl mx-auto px-6 lg:px-10 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full">
     <div class="reveal flex flex-col">
@@ -244,17 +253,8 @@
         <a href="https://lin.ee/snUmirF" target="_blank" rel="noopener" class="inline-flex items-center px-7 py-3.5 rounded-full text-sm md:text-base font-medium bg-[#06C755] text-white hover:opacity-90 transition-opacity">加入 LINE</a>
       </div>
     </div>
-    <!-- 品牌影片 + 業務資訊卡 -->
+    <!-- 業務資訊卡 -->
     <div class="flex flex-col gap-6 max-w-md lg:ml-auto w-full">
-      <!-- 品牌影片（Hero 內・跟標題並排） -->
-      <div class="reveal reveal-delay-2 rounded-2xl overflow-hidden shadow-lg border border-accent/20 bg-primary/5">
-        <video class="w-full h-auto block" width="1280" height="720"
-               autoplay muted loop playsinline preload="metadata"
-               poster="assets/img/home-hero-poster.jpg" controls>
-          <source src="assets/video/home-hero.mp4" type="video/mp4">
-          您的瀏覽器不支援影片播放，<a href="assets/video/home-hero.mp4" class="text-primary underline">點此觀看影片</a>。
-        </video>
-      </div>
       <div class="reveal reveal-delay-3 summary-card relative overflow-hidden flex-1 bg-white/80 backdrop-blur-sm rounded-2xl border border-accent/25 shadow-lg p-7">
         <p class="uppercase tracking-[0.22em] text-accent text-[11px] font-semibold mb-3 flex items-center gap-2"><span class="w-5 h-px bg-accent/60"></span>AI SUMMARY ・ 快速結論</p>
         <p class="text-[15px] text-ink/80 leading-[1.85] mb-5"><span class="font-bold text-primary">愷樂生醫</span>是專業<span class="font-bold">晶凍健康食品品牌</span>，自有 GABA 鈣鎂晶凍、左旋麩醯胺酸晶凍與樂暢適晶凍，並結合福爾 FORA 晶凍與膠原蛋白系列。</p>
