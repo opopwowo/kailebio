@@ -22,3 +22,7 @@ launch.json
 
 # node deps (local tooling for screenshots — not part of site)
 node_modules/
+
+# 試吃申請本地測試用（勿追蹤）
+wrangler.trial-test.jsonc
+_assets_test/

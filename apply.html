@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>試吃申請｜愷樂生醫</title>
+<style>
+:root{--wine:#7A1024;--gold:#C8A24D;--ivory:#FAFAF8;--ink:#2b2b2b}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,"Noto Sans TC",sans-serif;background:var(--ivory);color:var(--ink);padding:20px}
+.card{max-width:460px;margin:0 auto;background:#fff;border:1px solid #ecdfbf;border-radius:16px;padding:22px;box-shadow:0 16px 40px -22px rgba(122,16,36,.25)}
+h1{font-size:20px;color:var(--wine);margin:0 0 4px}
+.sub{font-size:13px;color:#8a7a55;margin:0 0 18px}
+label{display:block;font-size:13px;font-weight:700;color:#555;margin:12px 0 5px}
+input,select,textarea{width:100%;padding:11px 12px;border:1px solid #d8cba6;border-radius:10px;font-size:15px;background:#fff;color:var(--ink)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--wine)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.who{font-size:12px;color:#8a7a55;background:#f6efdd;border-radius:9px;padding:8px 10px;margin-bottom:6px;display:none}
+button{width:100%;margin-top:18px;background:var(--wine);color:#fff;border:none;border-radius:999px;padding:14px;font-size:16px;font-weight:800;cursor:pointer}
+button:disabled{opacity:.5}
+.done{text-align:center;padding:26px 6px}
+.done .em{font-size:42px}
+.err{color:#b00;font-size:13px;margin-top:10px;text-align:center;min-height:18px}
+.mini{font-size:11px;color:#aaa;text-align:center;margin-top:14px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <h1>🎁 試吃申請</h1>
+  <p class="sub">留下資料，專員會與您聯絡安排 💛</p>
+  <div class="who" id="who"></div>
+  <form id="f" autocomplete="on">
+    <div class="hp"><label>Company</label><input type="text" name="company" tabindex="-1" autocomplete="off"></div>
+    <label>姓名 *</label>
+    <input type="text" id="name" required maxlength="100" placeholder="您的大名">
+    <label>電話 *</label>
+    <input type="tel" id="phone" required maxlength="50" placeholder="09xx-xxx-xxx" inputmode="tel">
+    <label>想試哪一款？</label>
+    <select id="product">
+      <option value="">請選擇</option>
+      <option>左旋麩醯胺酸晶凍</option>
+      <option>GABA鈣鎂晶凍</option>
+      <option>樂暢適PLUS加強版</option>
+      <option>三款產品</option>
+    </select>
+    <label>Email（選填）</label>
+    <input type="email" id="email" maxlength="150" placeholder="方便寄送資訊">
+    <label>地區（選填）</label>
+    <input type="text" id="location" maxlength="120" placeholder="例：台北市">
+    <label>備註（選填）</label>
+    <textarea id="notes" rows="2" maxlength="1000" placeholder="想告訴我們的事"></textarea>
+    <button type="submit" id="submit">送出申請</button>
+    <div class="err" id="err"></div>
+  </form>
+  <p class="mini">送出即表示同意我們以您提供的聯絡方式與您聯繫。<br>本產品為食品，非藥品，不能取代藥物治療。</p>
+</div>
+
+<!-- LIFF SDK：在 LINE 內開啟時，可取得 LINE 名稱與 User ID -->
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script>
+  // ⚠️ 建立 LIFF 後把這行換成你的 LIFF ID（見 TRIAL-SETUP.md）。留空則以一般網頁表單運作。
+  var LIFF_ID = "REPLACE_WITH_LIFF_ID";
+  var lineProfile = { userId: null, displayName: null, idToken: null };
+
+  // 依網址參數預選產品：apply?product=樂暢適PLUS加強版
+  (function () {
+    var p = new URLSearchParams(location.search).get('product');
+    if (p) { var sel = document.getElementById('product'); for (var i = 0; i < sel.options.length; i++) if (sel.options[i].value === p) sel.selectedIndex = i; }
+  })();
+
+  (async function initLiff() {
+    if (!window.liff || !LIFF_ID || LIFF_ID.indexOf('REPLACE') === 0) return; // 尚未設定 → 當一般表單
+    try {
+      await liff.init({ liffId: LIFF_ID });
+      if (liff.isLoggedIn()) {
+        var pr = await liff.getProfile();
+        lineProfile.userId = pr.userId;
+        lineProfile.displayName = pr.displayName;
+        try { lineProfile.idToken = liff.getIDToken(); } catch (e) {}
+        var who = document.getElementById('who');
+        who.style.display = 'block';
+        who.textContent = '✅ 已辨識 LINE 身分：' + pr.displayName;
+      }
+    } catch (e) { /* 非 LINE 環境或初始化失敗 → 照常當一般表單 */ }
+  })();
+
+  document.getElementById('f').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var btn = document.getElementById('submit'), err = document.getElementById('err');
+    err.textContent = '';
+    var name = document.getElementById('name').value.trim();
+    var phone = document.getElementById('phone').value.trim();
+    if (!name || !phone) { err.textContent = '請填寫姓名與電話'; return; }
+    btn.disabled = true; btn.textContent = '送出中…';
+    var payload = {
+      name: name, phone: phone,
+      product: document.getElementById('product').value,
+      email: document.getElementById('email').value.trim(),
+      location: document.getElementById('location').value.trim(),
+      notes: document.getElementById('notes').value.trim(),
+      company: document.querySelector('[name=company]').value, // 蜜罐
+      line_user_id: lineProfile.userId,
+      line_display_name: lineProfile.displayName,
+      id_token: lineProfile.idToken,
+      source: (window.liff && liff.isInClient && liff.isInClient()) ? 'LINE' : '網站'
+    };
+    try {
+      var r = await fetch('/api/trial-apply', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      var d = await r.json().catch(function () { return {}; });
+      if (r.ok && d.ok) {
+        document.getElementById('card').innerHTML =
+          '<div class="done"><div class="em">🎉</div><h1>收到您的試吃申請！</h1>' +
+          '<p class="sub">資料已成功送出～專員會與您電話聯絡，請留意您的電話 😊</p></div>';
+        if (window.liff && liff.isInClient && liff.isInClient()) setTimeout(function () { try { liff.closeWindow(); } catch (e) {} }, 2200);
+      } else {
+        err.textContent = (d.error === 'db_not_configured') ? '系統設定中，請稍後再試或改用 LINE 聯繫。' : '送出失敗，請再試一次或改用電話／LINE 聯繫。';
+        btn.disabled = false; btn.textContent = '送出申請';
+      }
+    } catch (e2) {
+      err.textContent = '網路異常，請再試一次。'; btn.disabled = false; btn.textContent = '送出申請';
+    }
+  });
+</script>
+</body>
+</html>
