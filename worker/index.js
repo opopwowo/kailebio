@@ -29,6 +29,7 @@ export default {
     const path = url.pathname;
     try {
       if (path === '/api/trial-apply' && request.method === 'POST') return await handleApply(request, env, ctx);
+      if (path === '/api/line-webhook' && request.method === 'POST') return await handleLineWebhook(request, env, ctx);
       if (path === '/admin' || path === '/admin/' || path === '/admin/trials') return await adminPage(request, env);
       if (path === '/admin/api/list') return await adminList(request, env, url);
       if (path === '/admin/api/status' && request.method === 'POST') return await adminStatus(request, env);
@@ -211,6 +212,126 @@ async function verifyLiffIdToken(idToken, channelId) {
   });
   if (!resp.ok) return null;
   return resp.json(); // { sub, name, ... }
+}
+
+/* ============================================================
+   LINE Messaging API 對話式試吃問卷（客人全程留在 LINE 聊天室）
+   流程：點「我要試吃」→ 選產品 → 打姓名 → 打電話 → 完成
+   完成後：寫入 trial_applications（source=LINE）＋ 寄 Email
+   ============================================================ */
+const LINE_TRIGGERS = ['我要試吃', '試吃', '三種擇一試吃', '申請試吃', '點我試吃'];
+const LINE_PRODUCTS = ['左旋麩醯胺酸晶凍', 'GABA鈣鎂晶凍', '樂暢適PLUS加強版', '三款都想試'];
+let sessionsReady = false;
+
+async function ensureSessions(env) {
+  if (sessionsReady) return;
+  await env.DB.prepare(
+    `CREATE TABLE IF NOT EXISTS line_sessions (line_user_id TEXT PRIMARY KEY, step TEXT, data TEXT, updated_at TEXT DEFAULT (datetime('now')))`
+  ).run();
+  sessionsReady = true;
+}
+async function getSession(env, uid) {
+  const r = await env.DB.prepare(`SELECT step,data FROM line_sessions WHERE line_user_id=?`).bind(uid).first();
+  return r ? { step: r.step, data: JSON.parse(r.data || '{}') } : null;
+}
+async function setSession(env, uid, step, data) {
+  await env.DB.prepare(
+    `INSERT INTO line_sessions (line_user_id,step,data,updated_at) VALUES (?,?,?,datetime('now'))
+     ON CONFLICT(line_user_id) DO UPDATE SET step=excluded.step, data=excluded.data, updated_at=datetime('now')`
+  ).bind(uid, step, JSON.stringify(data)).run();
+}
+async function clearSession(env, uid) {
+  await env.DB.prepare(`DELETE FROM line_sessions WHERE line_user_id=?`).bind(uid).run();
+}
+
+async function handleLineWebhook(request, env, ctx) {
+  const bodyText = await request.text();
+  // 驗證 LINE 簽章（設定 channel secret 後啟用）
+  if (env.LINE_CHANNEL_SECRET) {
+    const ok = await verifyLineSignature(bodyText, request.headers.get('x-line-signature') || '', env.LINE_CHANNEL_SECRET);
+    if (!ok) return new Response('bad signature', { status: 403 });
+  }
+  let payload; try { payload = JSON.parse(bodyText); } catch { return new Response('bad json', { status: 400 }); }
+  const events = payload.events || [];
+  // 先回 200 給 LINE，事件在背景處理
+  ctx.waitUntil(Promise.all(events.map((ev) => handleLineEvent(ev, env).catch((e) => console.log('line event err', String(e))))));
+  return new Response('OK', { status: 200 });
+}
+
+async function handleLineEvent(ev, env) {
+  if (!env.DB || !env.LINE_CHANNEL_ACCESS_TOKEN) return;
+  if (ev.type !== 'message' || !ev.message || ev.message.type !== 'text') return;
+  const uid = ev.source && ev.source.userId;
+  const replyToken = ev.replyToken;
+  const text = String(ev.message.text || '').trim();
+  if (!uid || !replyToken) return;
+  await ensureSessions(env);
+
+  if (text === '取消') { await clearSession(env, uid); return replyText(env, replyToken, '已取消試吃申請 🙂 需要時再點「我要試吃」即可。'); }
+
+  let session = await getSession(env, uid);
+
+  // 尚未進行問卷：只有觸發字才開始（其他訊息不干擾）
+  if (!session) {
+    if (LINE_TRIGGERS.includes(text)) {
+      await setSession(env, uid, 'await_product', {});
+      return replyProduct(env, replyToken);
+    }
+    return;
+  }
+
+  // 問卷進行中，逐題收集
+  if (session.step === 'await_product') {
+    session.data.product = text.slice(0, 60);
+    await setSession(env, uid, 'await_name', session.data);
+    return replyText(env, replyToken, `好的，你選擇了「${session.data.product}」😊\n\n請輸入您的「大名」：`);
+  }
+  if (session.step === 'await_name') {
+    session.data.name = text.slice(0, 100);
+    await setSession(env, uid, 'await_phone', session.data);
+    return replyText(env, replyToken, `${session.data.name} 您好 💛\n請輸入您的「電話」：`);
+  }
+  if (session.step === 'await_phone') {
+    const digits = text.replace(/\D/g, '');
+    if (digits.length < 8) return replyText(env, replyToken, '電話看起來怪怪的，請重新輸入您的電話號碼（例：0912345678）：');
+    session.data.phone = text.slice(0, 50);
+    let displayName = null;
+    try { const p = await getLineProfile(env, uid); displayName = p && p.displayName; } catch {}
+    const insert = await env.DB.prepare(
+      `INSERT INTO trial_applications (line_user_id,line_display_name,name,phone,product,source) VALUES (?,?,?,?,?,?)`
+    ).bind(uid, displayName, session.data.name, session.data.phone, session.data.product || null, 'LINE').run();
+    const row = await env.DB.prepare(`SELECT * FROM trial_applications WHERE id=?`).bind(insert.meta && insert.meta.last_row_id).first();
+    await notifyByEmail(env, row).catch((e) => console.log('email err', String(e)));
+    await clearSession(env, uid);
+    return replyText(env, replyToken,
+      `🎉 收到您的試吃申請！\n謝謝您 💛\n資料已成功送出～\n\n📦 產品：${session.data.product}\n🙍 姓名：${session.data.name}\n📞 電話：${session.data.phone}\n\n接下來會由愷樂生醫專員與您電話聯絡，請留意您的電話 😊`);
+  }
+}
+
+async function replyText(env, replyToken, text, quickItems) {
+  const msg = { type: 'text', text };
+  if (quickItems) msg.quickReply = { items: quickItems };
+  return fetch('https://api.line.me/v2/bot/message/reply', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${env.LINE_CHANNEL_ACCESS_TOKEN}` },
+    body: JSON.stringify({ replyToken, messages: [msg] }),
+  });
+}
+function replyProduct(env, replyToken) {
+  const items = LINE_PRODUCTS.map((p) => ({ type: 'action', action: { type: 'message', label: p.slice(0, 20), text: p } }));
+  return replyText(env, replyToken, '想先試哪一款呢？✨\n請點下方按鈕，或直接輸入產品名稱：', items);
+}
+async function getLineProfile(env, uid) {
+  const r = await fetch(`https://api.line.me/v2/bot/profile/${uid}`, { headers: { Authorization: `Bearer ${env.LINE_CHANNEL_ACCESS_TOKEN}` } });
+  return r.ok ? r.json() : null;
+}
+async function verifyLineSignature(bodyText, signature, channelSecret) {
+  try {
+    const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(channelSecret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+    const mac = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(bodyText));
+    const b64 = btoa(String.fromCharCode(...new Uint8Array(mac)));
+    return b64 === signature;
+  } catch { return false; }
 }
 
 /* ---------------- utils ---------------- */

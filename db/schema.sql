@@ -23,3 +23,11 @@ CREATE TABLE IF NOT EXISTS trial_applications (
 CREATE INDEX IF NOT EXISTS idx_trial_created ON trial_applications(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_trial_status  ON trial_applications(status);
 CREATE INDEX IF NOT EXISTS idx_trial_product ON trial_applications(product);
+
+-- LINE 對話式問卷的暫存狀態（客人逐題填寫時記住進度；完成後清除）
+CREATE TABLE IF NOT EXISTS line_sessions (
+  line_user_id TEXT PRIMARY KEY,
+  step         TEXT,
+  data         TEXT,
+  updated_at   TEXT DEFAULT (datetime('now'))
+);
