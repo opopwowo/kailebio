@@ -23,7 +23,7 @@
 // 狀態值：new 新申請 / contacted 已聯絡 / processing 處理中 / shipped 已寄出 / done 已完成 / cancelled 已取消
 // invalid 為舊資料保留值（仍可篩選、仍可顯示），介面不再提供選擇
 const STATUSES = ['new', 'contacted', 'processing', 'shipped', 'done', 'cancelled', 'invalid'];
-const STATUS_LABEL = { new: '🟡 新申請', contacted: '🔵 已聯絡', done: '🟢 已完成', invalid: '⚪ 無效申請' };
+const STATUS_LABEL = { new: '🟡 新申請', contacted: '🔵 已聯絡', processing: '🟣 處理中', shipped: '🟢 已寄出', done: '⚫ 已完成', cancelled: '🔴 已取消', invalid: '⚪ 無效' };
 
 export default {
   async fetch(request, env, ctx) {
@@ -483,7 +483,7 @@ function card(x){
  UI_ORDER.forEach(function(k){opts+='<option value="'+k+'"'+(k===x.status?' selected':'')+'>'+STL[k].t+'</option>'});
  var dial=String(x.phone||'').replace(/[^0-9+]/g,'');
  var h='<div class="card" id="card-'+x.id+'" style="border-left-color:'+st.c+'">';
- h+='<div class="r1"><div class="name">👤 '+(esc(x.name)||'—')+'</div><span class="sbadge" style="color:'+st.c+'">'+st.n+'</span></div>';
+ h+='<div class="r1"><div class="name">👤 '+(esc(x.name)||'—')+'</div><span class="sbadge" style="color:'+st.c+'">'+esc(st.n)+'</span></div>';
  h+='<div class="phone"><span class="num">📱 '+(esc(x.phone)||'—')+'</span><button class="mini" data-act="copy" data-id="'+x.id+'" data-f="phone">📋 複製</button>'+(dial?'<a class="mini" href="tel:'+dial+'">📞 撥打</a>':'')+'</div>';
  h+='<div class="block">';
  h+='<div class="row"><span class="k">📦</span><span class="v">'+(esc(x.product)||'—')+'</span></div>';
@@ -497,7 +497,7 @@ function card(x){
  h+='</div>';
  return h;
 }
-async function onStatusChange(id,val){var x=byId(id);try{var r=await fetch('/admin/api/status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,status:val})});if(!r.ok)throw 0;if(x)x.status=val;var cd=document.getElementById('card-'+id);if(cd){cd.style.borderLeftColor=((STL[val]||{}).c)||'#ccc';var sb=cd.querySelector('.sbadge');if(sb){sb.textContent=(STL[val]||{}).n||val;sb.style.color=((STL[val]||{}).c)||'#888'}}var sf=document.getElementById('status').value;if(sf&&sf!==val&&cd){cd.parentNode.removeChild(cd)}loadStats();toast('狀態已更新 ✓')}catch(e){toast('更新失敗，請重試')}}
+async function onStatusChange(id,val){var x=byId(id);var prev=x?x.status:null;try{var r=await fetch('/admin/api/status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,status:val})});if(!r.ok)throw 0;if(x)x.status=val;var cd=document.getElementById('card-'+id);if(cd){cd.style.borderLeftColor=((STL[val]||{}).c)||'#ccc';var sb=cd.querySelector('.sbadge');if(sb){sb.textContent=(STL[val]||{}).n||val;sb.style.color=((STL[val]||{}).c)||'#888'}}var sf=document.getElementById('status').value;if(sf&&sf!==val&&cd){cd.parentNode.removeChild(cd);ITEMS=ITEMS.filter(function(it){return it.id!==id});var info=document.getElementById('listinfo');if(info)info.textContent='符合條件：'+ITEMS.length+' 筆';if(!ITEMS.length){document.getElementById('list').innerHTML='<div class="empty">目前沒有符合的申請</div>'}}loadStats();toast('狀態已更新 ✓')}catch(e){var sel=document.querySelector('select.status[data-id="'+id+'"]');if(sel&&prev!=null)sel.value=prev;toast('更新失敗，請重試')}}
 async function saveNote(id){var ta=document.getElementById('note-'+id);if(!ta)return;var v=ta.value;try{var r=await fetch('/admin/api/note',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,notes:v})});if(!r.ok)throw 0;var x=byId(id);if(x)x.notes=v;toast('備註已儲存 ✓')}catch(e){toast('儲存失敗，請重試')}}
 function filterStatus(k){document.getElementById('status').value=k;load()}
 document.addEventListener('click',function(e){var b=e.target.closest?e.target.closest('[data-act]'):null;if(!b)return;var a=b.getAttribute('data-act');if(a==='filter'){filterStatus(b.getAttribute('data-k')||'')}else if(a==='copy'){copyField(parseInt(b.getAttribute('data-id'),10),b.getAttribute('data-f'))}else if(a==='note'){saveNote(parseInt(b.getAttribute('data-id'),10))}else if(a==='go'){load()}else if(a==='clear'){['query','product','status','from','to'].forEach(function(k){document.getElementById(k).value=''});load()}});
