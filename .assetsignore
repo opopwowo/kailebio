@@ -1,0 +1,4 @@
+worker/
+db/
+TRIAL-SETUP.md
+*.sql

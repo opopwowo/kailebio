@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /apply
 
 Sitemap: https://cash-bio.com/sitemap.xml
