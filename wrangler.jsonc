@@ -5,9 +5,23 @@
   "observability": {
     "enabled": true
   },
+  "main": "worker/index.js",
   "assets": {
     "directory": ".",
+    "binding": "ASSETS",
     "not_found_handling": "404-page"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "trial-db",
+      "database_id": "7d1e7789-afb6-4ff0-9b61-0a1d03947ab8"
+    }
+  ],
+  "vars": {
+    "NOTIFY_TO": "lawrenceyu911@gmail.com",
+    "NOTIFY_FROM": "onboarding@resend.dev",
+    "ADMIN_URL": "https://cash-bio.com/admin/trials"
   },
   "compatibility_flags": [
     "nodejs_compat"
