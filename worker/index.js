@@ -20,8 +20,10 @@
  *   env.LINE_LIFF_CHANNEL_ID  （選用）用於驗證 LIFF idToken 的 LINE Login channel ID
  */
 
-const STATUSES = ['new', 'contacted', 'done', 'invalid'];
-const STATUS_LABEL = { new: '🟡 新申請', contacted: '🔵 已聯絡', done: '🟢 已完成', invalid: '⚪ 無效申請' };
+// 狀態值：new 新申請 / contacted 已聯絡 / processing 處理中 / shipped 已寄出 / done 已完成 / cancelled 已取消
+// invalid 為舊資料保留值（仍可篩選、仍可顯示），介面不再提供選擇
+const STATUSES = ['new', 'contacted', 'processing', 'shipped', 'done', 'cancelled', 'invalid'];
+const STATUS_LABEL = { new: '🟡 新申請', contacted: '🔵 已聯絡', processing: '🟣 處理中', shipped: '🟢 已寄出', done: '⚫ 已完成', cancelled: '🔴 已取消', invalid: '⚪ 無效' };
 
 export default {
   async fetch(request, env, ctx) {
@@ -33,6 +35,8 @@ export default {
       if (path === '/admin' || path === '/admin/' || path === '/admin/trials') return await adminPage(request, env);
       if (path === '/admin/api/list') return await adminList(request, env, url);
       if (path === '/admin/api/status' && request.method === 'POST') return await adminStatus(request, env);
+      if (path === '/admin/api/note' && request.method === 'POST') return await adminNote(request, env);
+      if (path === '/admin/api/stats') return await adminStats(request, env);
       // 其餘一律交給靜態網站
       if (env.ASSETS) return env.ASSETS.fetch(request);
       return new Response('Not found', { status: 404 });
@@ -102,7 +106,7 @@ async function notifyByEmail(env, row) {
     body: JSON.stringify({
       from: env.NOTIFY_FROM || 'onboarding@resend.dev',
       to: [env.NOTIFY_TO],
-      subject: '【愷樂生醫】🎉 有新的試吃申請',
+      subject: '【愷樂生醫】新的試吃申請通知',
       html: renderEmail(row, env.ADMIN_URL || ''),
     }),
   });
@@ -125,7 +129,7 @@ function renderEmail(r, adminUrl) {
       ${rowize('電話', r.phone)}
       ${rowize('選擇產品', r.product)}
       ${rowize('Email', r.email)}
-      ${rowize('地區', r.location)}
+      ${rowize('收件地址', r.location)}
       ${rowize('LINE 名稱', r.line_display_name)}
       ${rowize('LINE User ID', r.line_user_id)}
       ${rowize('備註', r.notes)}
@@ -195,6 +199,35 @@ async function adminStatus(request, env) {
   if (!id || !STATUSES.includes(status)) return json({ ok: false, error: 'bad_params' }, 400, noindexHeaders());
   await env.DB.prepare(`UPDATE trial_applications SET status=?, updated_at=datetime('now') WHERE id=?`).bind(status, id).run();
   return json({ ok: true }, 200, noindexHeaders());
+}
+
+// 儲存客服備註（不影響其他欄位）
+async function adminNote(request, env) {
+  const auth = requireAuth(request, env); if (!auth.ok) return auth.resp;
+  if (!env.DB) return json({ ok: false, error: 'db_not_configured' }, 503, noindexHeaders());
+  let body; try { body = await request.json(); } catch { return json({ ok: false, error: 'bad_json' }, 400, noindexHeaders()); }
+  const id = parseInt(body.id, 10);
+  if (!id) return json({ ok: false, error: 'bad_params' }, 400, noindexHeaders());
+  const notes = String(body.notes == null ? '' : body.notes).slice(0, 1000);
+  await env.DB.prepare(`UPDATE trial_applications SET notes=?, updated_at=datetime('now') WHERE id=?`).bind(notes || null, id).run();
+  return json({ ok: true }, 200, noindexHeaders());
+}
+
+// 名單統計：全部/今日（台灣時間）/各狀態筆數 + 目前有的產品清單（供後台儀表板與篩選使用）
+async function adminStats(request, env) {
+  const auth = requireAuth(request, env); if (!auth.ok) return auth.resp;
+  if (!env.DB) return json({ ok: false, error: 'db_not_configured' }, 503, noindexHeaders());
+  const grouped = await env.DB.prepare(`SELECT status, COUNT(*) AS c FROM trial_applications GROUP BY status`).all();
+  const byStatus = {}; let total = 0;
+  for (const row of (grouped.results || [])) { byStatus[row.status] = row.c; total += row.c; }
+  const todayRow = await env.DB.prepare(
+    `SELECT COUNT(*) AS c FROM trial_applications WHERE date(created_at,'+8 hours') = date('now','+8 hours')`
+  ).first();
+  const prod = await env.DB.prepare(
+    `SELECT DISTINCT product AS p FROM trial_applications WHERE product IS NOT NULL AND product <> '' ORDER BY product`
+  ).all();
+  const products = (prod.results || []).map((r) => r.p);
+  return json({ ok: true, total, today: (todayRow && todayRow.c) || 0, byStatus, products }, 200, noindexHeaders());
 }
 
 /* ---------------- 後台：頁面 ---------------- */
@@ -341,76 +374,134 @@ function json(obj, status = 200, extra = {}) {
 
 /* ---------------- 後台 HTML（單頁，資料以 API 載入） ---------------- */
 const ADMIN_HTML = `<!doctype html><html lang="zh-Hant"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <title>愷樂生醫｜試吃申請管理</title>
 <style>
-:root{--wine:#7A1024;--gold:#C8A24D;--ivory:#FAFAF8;--ink:#2b2b2b}
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"Noto Sans TC",sans-serif;background:var(--ivory);color:var(--ink)}
-header{background:var(--wine);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-header h1{font-size:17px;margin:0;font-weight:800}header .count{margin-left:auto;font-size:13px;opacity:.85}
-.wrap{max-width:1100px;margin:0 auto;padding:16px}
-.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.filters input,.filters select{padding:9px 11px;border:1px solid #d8cba6;border-radius:9px;font-size:14px;background:#fff}
-.filters input[type=text]{min-width:180px}
-button{cursor:pointer;border:none;border-radius:9px;font-size:13px;padding:9px 14px;font-weight:700}
-.btn{background:var(--wine);color:#fff}.btn2{background:#eee;color:#333}
-.card{background:#fff;border:1px solid #ecdfbf;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 8px 22px -16px rgba(122,16,36,.25)}
-.card .top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
-.card .nm{font-weight:800;font-size:16px}.card .tel{color:var(--wine);font-weight:700}
-.badge{font-size:12px;padding:3px 9px;border-radius:999px;background:#f3ead2;color:#7a5}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:6px 16px;margin-top:10px;font-size:13px;color:#555}
-.grid b{color:#333}
-.muted{color:#999}
-select.status{padding:6px 8px;border-radius:8px;border:1px solid #d8cba6;font-size:13px}
-.empty{text-align:center;color:#999;padding:40px}
-@media(max-width:520px){.card .top{flex-direction:column;align-items:flex-start}}
+:root{--wine:#8B1025;--wine2:#a3203a;--wine-tint:#f7ecef;--bg:#f4f2ee;--card:#fff;--ink:#2b2530;--muted:#8b8592;--line:#ece7e0}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html,body{overflow-x:hidden;max-width:100%}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC","Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(135deg,var(--wine),var(--wine2));color:#fff;padding:15px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:5}
+header h1{font-size:18px;margin:0;font-weight:800;letter-spacing:.5px}
+header .brand{font-size:10px;opacity:.82;font-weight:600;margin-top:3px;letter-spacing:1.5px}
+header .hstat{margin-left:auto;text-align:right;font-size:13px;line-height:1.55;opacity:.96}
+header .hstat span{display:block}
+header .hstat b{font-size:17px;font-weight:800}
+.wrap{max-width:960px;margin:0 auto;padding:14px 14px 48px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 13px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);color:#4a444f;border-radius:999px;padding:7px 13px;font-size:13px;font-weight:600;cursor:pointer;line-height:1}
+.chip b{font-size:14px;color:var(--ink)}
+.chip .dot{width:9px;height:9px;border-radius:50%;flex:none}
+.chip.active{border-color:var(--wine);background:var(--wine-tint);color:var(--wine)}
+.chip.active b{color:var(--wine)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:12px}
+.filters input,.filters select{padding:0 11px;height:40px;border:1px solid var(--line);border-radius:9px;font-size:14px;background:#fff;color:var(--ink)}
+.filters .search{flex:1 1 220px;min-width:150px}
+.filters .dates{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:13px}
+.btn{background:var(--wine);color:#fff;border:none;border-radius:9px;font-size:14px;height:40px;padding:0 18px;font-weight:700;cursor:pointer}
+.btn.ghost{background:#f0ebe4;color:#5a545f}
+.listinfo{color:var(--muted);font-size:12px;margin:0 2px 10px}
+.card{background:var(--card);border:1px solid var(--line);border-left:4px solid #ccc;border-radius:14px;padding:14px 15px;margin-bottom:12px;box-shadow:0 2px 10px rgba(30,15,20,.05)}
+.r1{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.name{font-size:20px;font-weight:800;line-height:1.25}
+.sbadge{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap;background:#faf7f3;border:1px solid currentColor}
+.phone{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:9px}
+.phone .num{font-size:18px;font-weight:800;color:var(--wine);letter-spacing:.5px}
+.mini{border:1px solid var(--line);background:#faf8f5;color:#5a545f;border-radius:8px;padding:0 11px;height:34px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+.mini:active{background:#efe9e2}
+.block{margin-top:10px;display:flex;flex-direction:column;gap:7px}
+.row{display:flex;align-items:flex-start;gap:8px;font-size:14px;color:#3f3a45;flex-wrap:wrap}
+.row .k{width:18px;text-align:center;flex:none}
+.row .v{flex:1 1 auto;min-width:0;word-break:break-word;line-height:1.45}
+.meta{margin-top:9px;font-size:13px;color:var(--muted);display:flex;gap:6px 14px;flex-wrap:wrap;align-items:center}
+.lid{margin-top:8px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lid code{background:#f3efe9;padding:3px 8px;border-radius:6px;color:#5a545f}
+.note{margin-top:12px}
+.note label{font-size:12px;color:var(--muted);font-weight:700;display:block;margin-bottom:5px}
+.note textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 10px;font-size:14px;font-family:inherit;resize:vertical;min-height:44px;color:var(--ink);background:#fff}
+.note textarea:focus{outline:none;border-color:var(--wine)}
+.note .save{margin-top:7px}
+.statusbar{display:flex;align-items:center;gap:9px;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+.statusbar label{font-size:12px;color:var(--muted);font-weight:700;flex:none}
+select.status{flex:1 1 auto;min-width:0;max-width:100%;padding:0 10px;height:42px;border-radius:9px;border:1px solid var(--line);font-size:14px;font-weight:700;background:#fff;color:var(--ink)}
+.empty{text-align:center;color:var(--muted);padding:54px 20px;font-size:14px}
+#toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(18px);background:#2b2530;color:#fff;padding:10px 18px;border-radius:999px;font-size:13px;font-weight:700;opacity:0;pointer-events:none;transition:.25s;z-index:50}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:560px){
+ .wrap{padding:12px 11px 48px}
+ header .hstat{margin-left:0;width:100%;text-align:left;display:flex;gap:18px}
+ .filters{flex-direction:column;align-items:stretch}
+ .filters .search,.filters input,.filters select,.btn{width:100%;flex:0 0 auto}
+ .filters .dates{width:100%;justify-content:space-between}
+ .filters .dates input{flex:1 1 0;min-width:0;width:auto}
+ .name{font-size:19px}
+}
 </style></head><body>
-<header><h1>📋 試吃申請管理</h1><span class="count" id="count"></span></header>
+<header>
+ <div><h1>📋 試吃申請管理</h1><div class="brand">愷樂生醫 CASH BIOMEDICAL</div></div>
+ <div class="hstat"><span>今日申請 <b id="hdrToday">0</b> 件</span><span>全部申請 <b id="hdrTotal">0</b> 件</span></div>
+</header>
 <div class="wrap">
-  <div class="filters">
-    <input type="text" id="query" placeholder="搜尋姓名 / 電話 / LINE 名稱">
-    <select id="product"><option value="">全部產品</option>
-      <option>左旋麩醯胺酸晶凍</option><option>GABA鈣鎂晶凍</option><option>樂暢適PLUS加強版</option><option>三款產品</option></select>
-    <select id="status"><option value="">全部狀態</option>
-      <option value="new">🟡 新申請</option><option value="contacted">🔵 已聯絡</option><option value="done">🟢 已完成</option><option value="invalid">⚪ 無效申請</option></select>
-    <input type="date" id="from"><input type="date" id="to">
-    <button class="btn" onclick="load()">搜尋</button>
-    <button class="btn2" onclick="clearF()">清除</button>
-  </div>
-  <div id="list"></div>
+ <div class="chips" id="chips"></div>
+ <div class="filters">
+  <input class="search" type="text" id="query" placeholder="🔍 搜尋姓名、電話、LINE名稱">
+  <select id="product"><option value="">全部產品</option></select>
+  <select id="status"><option value="">全部狀態</option><option value="new">🟡 新申請</option><option value="contacted">🔵 已聯絡</option><option value="processing">🟣 處理中</option><option value="shipped">🟢 已寄出</option><option value="done">⚫ 已完成</option><option value="cancelled">🔴 已取消</option><option value="invalid">⚪ 無效</option></select>
+  <span class="dates"><input type="date" id="from"> ～ <input type="date" id="to"></span>
+  <button class="btn" data-act="go">搜尋</button>
+  <button class="btn ghost" data-act="clear">清除</button>
+ </div>
+ <div class="listinfo" id="listinfo"></div>
+ <div id="list"></div>
 </div>
+<div id="toast"></div>
 <script>
-var STL={new:'🟡 新申請',contacted:'🔵 已聯絡',done:'🟢 已完成',invalid:'⚪ 無效申請'};
-function esc(s){return String(s==null?'':s).replace(/[<>&]/g,function(c){return{'<':'&lt;','>':'&gt;','&':'&amp;'}[c]})}
+var STL={new:{t:'🟡 新申請',n:'新申請',c:'#E0A400'},contacted:{t:'🔵 已聯絡',n:'已聯絡',c:'#2F80ED'},processing:{t:'🟣 處理中',n:'處理中',c:'#8B5CF6'},shipped:{t:'🟢 已寄出',n:'已寄出',c:'#27AE60'},done:{t:'⚫ 已完成',n:'已完成',c:'#4B5563'},cancelled:{t:'🔴 已取消',n:'已取消',c:'#D64545'},invalid:{t:'⚪ 無效',n:'無效',c:'#9AA0A6'}};
+var UI_ORDER=['new','contacted','processing','shipped','done','cancelled'];
+var CHIP_ORDER=['new','contacted','processing','shipped','done','cancelled'];
+var ITEMS=[];
+function esc(s){return String(s==null?'':s).replace(/[<>&"']/g,function(c){return{'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]})}
+function byId(id){for(var i=0;i<ITEMS.length;i++){if(ITEMS[i].id===id)return ITEMS[i]}return null}
+function shortId(s){s=String(s||'');return s.length>12?(s.slice(0,5)+'…'+s.slice(-5)):s}
+function fmtTime(s){if(!s)return '';try{var d=new Date(String(s).replace(' ','T')+'Z');var p=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d);var o={};p.forEach(function(x){o[x.type]=x.value});return o.year+'-'+o.month+'-'+o.day+' '+o.hour+':'+o.minute}catch(e){return String(s)}}
+function toast(m){var el=document.getElementById('toast');el.textContent=m;el.className='show';clearTimeout(window._tt);window._tt=setTimeout(function(){el.className=''},1600)}
+function copyText(t){t=String(t==null?'':t);if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){toast('已複製 ✓')},function(){fbCopy(t)})}else{fbCopy(t)}}
+function fbCopy(t){var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');toast('已複製 ✓')}catch(e){toast('複製失敗')}document.body.removeChild(ta)}
+function copyField(id,f){var x=byId(id);if(x)copyText(x[f])}
 function qs(){var p=new URLSearchParams();['query','product','status','from','to'].forEach(function(k){var v=document.getElementById(k).value.trim();if(v)p.set(k,v)});return p.toString()}
-function clearF(){['query','product','status','from','to'].forEach(function(k){document.getElementById(k).value=''});load()}
-async function load(){
-  var r=await fetch('/admin/api/list?'+qs(),{headers:{'Accept':'application/json'}});
-  if(!r.ok){document.getElementById('list').innerHTML='<div class="empty">載入失敗（'+r.status+'）</div>';return}
-  var d=await r.json();document.getElementById('count').textContent='共 '+d.count+' 筆';
-  if(!d.items.length){document.getElementById('list').innerHTML='<div class="empty">目前沒有符合的申請</div>';return}
-  document.getElementById('list').innerHTML=d.items.map(card).join('');
-}
+function setActiveChip(k){var cs=document.querySelectorAll('#chips .chip');for(var i=0;i<cs.length;i++){cs[i].classList.toggle('active',(cs[i].getAttribute('data-k')||'')===(k||''))}}
+function populateProducts(products){var sel=document.getElementById('product');var cur=sel.value;var h='<option value="">全部產品</option>';(products||[]).forEach(function(p){h+='<option value="'+esc(p)+'">'+esc(p)+'</option>'});sel.innerHTML=h;sel.value=cur}
+function renderChips(s){var cur=document.getElementById('status').value;var h='<button class="chip'+(cur===''?' active':'')+'" data-act="filter" data-k="">全部 <b>'+(s.total||0)+'</b></button>';CHIP_ORDER.forEach(function(k){var n=(s.byStatus&&s.byStatus[k])||0;h+='<button class="chip'+(cur===k?' active':'')+'" data-act="filter" data-k="'+k+'"><span class="dot" style="background:'+STL[k].c+'"></span>'+STL[k].n+' <b>'+n+'</b></button>'});document.getElementById('chips').innerHTML=h}
+async function loadStats(){try{var r=await fetch('/admin/api/stats',{headers:{'Accept':'application/json'}});if(!r.ok)return;var s=await r.json();document.getElementById('hdrToday').textContent=s.today||0;document.getElementById('hdrTotal').textContent=s.total||0;populateProducts(s.products);renderChips(s)}catch(e){}}
+async function load(){var info=document.getElementById('listinfo');var list=document.getElementById('list');info.textContent='載入中…';try{var r=await fetch('/admin/api/list?'+qs(),{headers:{'Accept':'application/json'}});if(!r.ok){list.innerHTML='<div class="empty">載入失敗（'+r.status+'）</div>';info.textContent='';return}var d=await r.json();ITEMS=d.items||[];info.textContent='符合條件：'+ITEMS.length+' 筆';list.innerHTML=ITEMS.length?ITEMS.map(card).join(''):'<div class="empty">目前沒有符合的申請</div>';setActiveChip(document.getElementById('status').value)}catch(e){list.innerHTML='<div class="empty">載入失敗，請重新整理</div>';info.textContent=''}}
 function card(x){
-  var opts=Object.keys(STL).map(function(k){return '<option value="'+k+'"'+(k===x.status?' selected':'')+'>'+STL[k]+'</option>'}).join('');
-  return '<div class="card"><div class="top">'
-    +'<div><span class="nm">'+esc(x.name)+'</span> &nbsp;<span class="tel">'+esc(x.phone)+'</span></div>'
-    +'<div><span class="muted">#'+x.id+'　'+esc(x.created_at)+'</span> &nbsp;'
-    +'<select class="status" onchange="setStatus('+x.id+',this.value)">'+opts+'</select></div></div>'
-    +'<div class="grid">'
-    +'<div><b>產品：</b>'+(esc(x.product)||'—')+'</div>'
-    +'<div><b>Email：</b>'+(esc(x.email)||'—')+'</div>'
-    +'<div><b>地區：</b>'+(esc(x.location)||'—')+'</div>'
-    +'<div><b>LINE 名稱：</b>'+(esc(x.line_display_name)||'—')+'</div>'
-    +'<div><b>LINE ID：</b>'+(esc(x.line_user_id)||'—')+'</div>'
-    +'<div><b>來源：</b>'+(esc(x.source)||'—')+'</div>'
-    +(x.notes?'<div style="grid-column:1/-1"><b>備註：</b>'+esc(x.notes)+'</div>':'')
-    +'</div></div>';
+ var st=STL[x.status]||{t:x.status,n:x.status,c:'#9AA0A6'};
+ var opts='';
+ if(UI_ORDER.indexOf(x.status)<0){opts+='<option value="'+esc(x.status)+'" selected>'+esc(st.t)+'</option>'}
+ UI_ORDER.forEach(function(k){opts+='<option value="'+k+'"'+(k===x.status?' selected':'')+'>'+STL[k].t+'</option>'});
+ var dial=String(x.phone||'').replace(/[^0-9+]/g,'');
+ var h='<div class="card" id="card-'+x.id+'" style="border-left-color:'+st.c+'">';
+ h+='<div class="r1"><div class="name">👤 '+(esc(x.name)||'—')+'</div><span class="sbadge" style="color:'+st.c+'">'+esc(st.n)+'</span></div>';
+ h+='<div class="phone"><span class="num">📱 '+(esc(x.phone)||'—')+'</span><button class="mini" data-act="copy" data-id="'+x.id+'" data-f="phone">📋 複製</button>'+(dial?'<a class="mini" href="tel:'+dial+'">📞 撥打</a>':'')+'</div>';
+ h+='<div class="block">';
+ h+='<div class="row"><span class="k">📦</span><span class="v">'+(esc(x.product)||'—')+'</span></div>';
+ if(x.location){h+='<div class="row"><span class="k">📍</span><span class="v">'+esc(x.location)+'</span><button class="mini" data-act="copy" data-id="'+x.id+'" data-f="location">📋 複製地址</button></div>'}
+ if(x.email){h+='<div class="row"><span class="k">✉️</span><span class="v">'+esc(x.email)+'</span></div>'}
+ h+='</div>';
+ h+='<div class="meta"><span>🕒 '+esc(fmtTime(x.created_at))+'</span><span>💬 '+(esc(x.source)||'—')+'</span>'+(x.line_display_name?('<span>👥 '+esc(x.line_display_name)+'</span>'):'')+'</div>';
+ if(x.line_user_id){h+='<div class="lid">LINE ID：<code>'+esc(shortId(x.line_user_id))+'</code><button class="mini" data-act="copy" data-id="'+x.id+'" data-f="line_user_id">📋 複製 ID</button></div>'}
+ h+='<div class="note"><label>📝 客服備註</label><textarea id="note-'+x.id+'" placeholder="例如：已電話聯絡／客戶晚上方便接電話／已於 8/31 寄出">'+esc(x.notes||'')+'</textarea><div class="save"><button class="mini" data-act="note" data-id="'+x.id+'">💾 儲存備註</button></div></div>';
+ h+='<div class="statusbar"><label>狀態</label><select class="status" data-act="status" data-id="'+x.id+'">'+opts+'</select></div>';
+ h+='</div>';
+ return h;
 }
-async function setStatus(id,status){
-  await fetch('/admin/api/status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,status:status})});
-}
+async function onStatusChange(id,val){var x=byId(id);var prev=x?x.status:null;try{var r=await fetch('/admin/api/status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,status:val})});if(!r.ok)throw 0;if(x)x.status=val;var cd=document.getElementById('card-'+id);if(cd){cd.style.borderLeftColor=((STL[val]||{}).c)||'#ccc';var sb=cd.querySelector('.sbadge');if(sb){sb.textContent=(STL[val]||{}).n||val;sb.style.color=((STL[val]||{}).c)||'#888'}}var sf=document.getElementById('status').value;if(sf&&sf!==val&&cd){cd.parentNode.removeChild(cd);ITEMS=ITEMS.filter(function(it){return it.id!==id});var info=document.getElementById('listinfo');if(info)info.textContent='符合條件：'+ITEMS.length+' 筆';if(!ITEMS.length){document.getElementById('list').innerHTML='<div class="empty">目前沒有符合的申請</div>'}}loadStats();toast('狀態已更新 ✓')}catch(e){var sel=document.querySelector('select.status[data-id="'+id+'"]');if(sel&&prev!=null)sel.value=prev;toast('更新失敗，請重試')}}
+async function saveNote(id){var ta=document.getElementById('note-'+id);if(!ta)return;var v=ta.value;try{var r=await fetch('/admin/api/note',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,notes:v})});if(!r.ok)throw 0;var x=byId(id);if(x)x.notes=v;toast('備註已儲存 ✓')}catch(e){toast('儲存失敗，請重試')}}
+function filterStatus(k){document.getElementById('status').value=k;load()}
+document.addEventListener('click',function(e){var b=e.target.closest?e.target.closest('[data-act]'):null;if(!b)return;var a=b.getAttribute('data-act');if(a==='filter'){filterStatus(b.getAttribute('data-k')||'')}else if(a==='copy'){copyField(parseInt(b.getAttribute('data-id'),10),b.getAttribute('data-f'))}else if(a==='note'){saveNote(parseInt(b.getAttribute('data-id'),10))}else if(a==='go'){load()}else if(a==='clear'){['query','product','status','from','to'].forEach(function(k){document.getElementById(k).value=''});load()}});
+document.addEventListener('change',function(e){var s=e.target;if(s&&s.getAttribute&&s.getAttribute('data-act')==='status'){onStatusChange(parseInt(s.getAttribute('data-id'),10),s.value)}});
 document.getElementById('query').addEventListener('keydown',function(e){if(e.key==='Enter')load()});
-load();
+loadStats();load();
 </script></body></html>`;
