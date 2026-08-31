@@ -102,7 +102,7 @@ async function notifyByEmail(env, row) {
     body: JSON.stringify({
       from: env.NOTIFY_FROM || 'onboarding@resend.dev',
       to: [env.NOTIFY_TO],
-      subject: '【愷樂生醫】🎉 有新的試吃申請',
+      subject: '【愷樂生醫】新的試吃申請通知',
       html: renderEmail(row, env.ADMIN_URL || ''),
     }),
   });
@@ -125,7 +125,7 @@ function renderEmail(r, adminUrl) {
       ${rowize('電話', r.phone)}
       ${rowize('選擇產品', r.product)}
       ${rowize('Email', r.email)}
-      ${rowize('地區', r.location)}
+      ${rowize('收件地址', r.location)}
       ${rowize('LINE 名稱', r.line_display_name)}
       ${rowize('LINE User ID', r.line_user_id)}
       ${rowize('備註', r.notes)}
@@ -401,7 +401,7 @@ function card(x){
     +'<div class="grid">'
     +'<div><b>產品：</b>'+(esc(x.product)||'—')+'</div>'
     +'<div><b>Email：</b>'+(esc(x.email)||'—')+'</div>'
-    +'<div><b>地區：</b>'+(esc(x.location)||'—')+'</div>'
+    +'<div><b>收件地址：</b>'+(esc(x.location)||'—')+'</div>'
     +'<div><b>LINE 名稱：</b>'+(esc(x.line_display_name)||'—')+'</div>'
     +'<div><b>LINE ID：</b>'+(esc(x.line_user_id)||'—')+'</div>'
     +'<div><b>來源：</b>'+(esc(x.source)||'—')+'</div>'
