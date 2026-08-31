@@ -2,6 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "case-55",
   "compatibility_date": "2026-06-26",
+  // keep_vars：部署時保留 Cloudflare 後台手動設定的密鑰（ADMIN_USER / ADMIN_PASSWORD / RESEND_API_KEY），避免被清空
   "keep_vars": true,
   "observability": {
     "enabled": true
