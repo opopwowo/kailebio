@@ -460,3 +460,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 /* ── 產品頁 Hero：海報貼齊底部（修正高螢幕上海報浮在中央、下方留一大片米色的問題） ── */
 .hero-product{align-items:flex-end;padding-bottom:1.5rem;}
 @media (min-width:1024px){.hero-product{padding-bottom:2.5rem;}}
+
+/* ===== 首頁 #reviews 醫師推薦：牙醫師推薦橫幅排版 ===== */
+.doc-gallery figure { margin: 0; }
+@media (min-width: 768px) {
+  .doc-gallery .doc-last { grid-column: 1 / -1; width: calc(50% - 0.75rem); margin: 0 auto; }
+}
