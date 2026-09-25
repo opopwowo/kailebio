@@ -4,3 +4,4 @@ docs/
 TRIAL-SETUP.md
 AGENTS.md
 *.sql
+line-bot/
