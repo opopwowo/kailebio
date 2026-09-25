@@ -1,4 +1,6 @@
 worker/
 db/
+docs/
 TRIAL-SETUP.md
+AGENTS.md
 *.sql
