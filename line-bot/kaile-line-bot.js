@@ -116,7 +116,7 @@ var worker_default = {
     if (ctx && ctx.waitUntil)
       ctx.waitUntil(installRichMenuOnce(env));
     const body = JSON.parse(bodyText);
-    await Promise.all((body.events || []).map((ev) => handleEvent(ev, env).catch((e) => console.log("event error", e))));
+    await Promise.all((body.events || []).map((ev) => handleEvent(ev, env, ctx).catch((e) => console.log("event error", e))));
     return new Response("OK", { status: 200 });
   },
   // 排程觸發（若 wrangler.toml 有設 cron 才會跑）：部署後自動裝一次圖文選單。
@@ -152,7 +152,7 @@ function isAdmin(env, provided) {
   return false;
 }
 __name(isAdmin, "isAdmin");
-async function handleEvent(ev, env) {
+async function handleEvent(ev, env, ctx) {
   const token = env.CHANNEL_ACCESS_TOKEN;
   const userId = ev.source && ev.source.userId;
   if (ev.type === "follow") {
@@ -182,7 +182,7 @@ async function handleEvent(ev, env) {
           return reply(token, ev.replyToken, [textCard("\u5DF2\u53D6\u6D88\u8A66\u5403\u7533\u8ACB \u{1F646} \u6709\u9700\u8981\u518D\u9EDE\u9078\u55AE\u7684\u300C\u{1F381} \u4E09\u7A2E\u64C7\u4E00\u8A66\u5403\u300D\u5373\u53EF\u91CD\u65B0\u958B\u59CB\u3002")]);
         }
         if (!RESERVED_CMD.test(text)) {
-          return handleTrialInput(ev, env, token, sess, text, userId);
+          return handleTrialInput(ev, env, token, sess, text, userId, ctx);
         }
         await clearSession(env, userId);
       }
@@ -244,7 +244,7 @@ async function fetchWithTimeout(url, opts, ms) {
   }
 }
 __name(fetchWithTimeout, "fetchWithTimeout");
-async function handleTrialInput(ev, env, token, sess, text, userId) {
+async function handleTrialInput(ev, env, token, sess, text, userId, ctx) {
   if (sess.step === "name") {
     if (!text)
       return reply(token, ev.replyToken, [textCard("\u5927\u540D\u4E0D\u53EF\u7A7A\u767D\uFF0C\u8ACB\u518D\u8F38\u5165\u4E00\u6B21\u60A8\u7684\u59D3\u540D \u{1F64F}")]);
@@ -280,7 +280,7 @@ async function handleTrialInput(ev, env, token, sess, text, userId) {
     };
     // ★ 先回覆客人「申請成功」＋清除 session —— 保證一定回覆，不受後面寫入/寄信/同步影響（這就是原本卡住的原因）
     try { await reply(token, ev.replyToken, trialDone()); } catch (e) { console.log("reply fail", String(e)); }
-    try { await clearSession(env, userId); } catch (e) { console.log("clearSession fail", String(e)); }
+    const background = (async () => { try { await clearSession(env, userId); } catch (e) { console.log("clearSession fail", String(e)); }
     // 以下全部背景處理（客人已收到成功訊息）：存 KV、通知店家、抓 LINE 名稱、寫入官網後台＋Email。任何錯誤都不影響客人。
     try { await saveLead(env, lead); } catch (e) { console.log("saveLead fail", String(e)); }
     try { await notifyOwnerNewLead(env, token, lead); } catch (e) { console.log("notifyOwner fail", String(e)); }
@@ -304,14 +304,12 @@ async function handleTrialInput(ev, env, token, sess, text, userId) {
           line_display_name: _lineName,
           source: "LINE"
         })
-      }, 8000);
-      if (!syncResponse.ok) throw new Error("trial-apply HTTP " + syncResponse.status);
-      const syncResult = await syncResponse.json();
-      if (!syncResult || syncResult.ok !== true || !syncResult.id) throw new Error("trial-apply invalid acknowledgement");
+      }, 8000); if (!syncResponse.ok) throw new Error("trial-apply HTTP " + syncResponse.status); const syncResult = await syncResponse.json(); if (!syncResult || syncResult.ok !== true || !syncResult.id) throw new Error("trial-apply invalid acknowledgement");
     } catch (e) {
       console.log("sync to cash-bio failed", String(e));
     }
-    return;
+      })(); if (ctx && ctx.waitUntil) ctx.waitUntil(background); else await background;
+          return;
   }
   await clearSession(env, userId);
   return reply(token, ev.replyToken, [textCard("\u6211\u5011\u91CD\u65B0\u958B\u59CB\u597D\u55CE\uFF1F\u9EDE\u9078\u55AE\u7684\u300C\u{1F381} \u4E09\u7A2E\u64C7\u4E00\u8A66\u5403\u300D\u5373\u53EF \u{1F60A}")]);
