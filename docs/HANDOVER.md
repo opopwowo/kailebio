@@ -1,7 +1,7 @@
 # 專案交接文件 / Project Handover — 愷樂生醫 cash-bio.com
 
 **For the incoming agent (Codex) and the site owner.**
-Written 2026-09-25. Read `AGENTS.md` first for operating rules; this file is the context and history.
+Written 2026-09-25; repository facts updated 2026-09-26. Read `AGENTS.md` first for operating rules; this file is the context and history.
 
 ---
 
@@ -15,36 +15,24 @@ Written 2026-09-25. Read `AGENTS.md` first for operating rules; this file is the
 | Admin backend `/admin/trials` | ✅ Live, CRM-style UI (PR #54) |
 | 醫師推薦 banners on homepage | ✅ Live (PR #55) |
 | LINE bot step-3 "stuck" bug | ⚠️ Fix written and owner says it was pasted/deployed — **end-to-end result never confirmed** |
-| LINE bot source code in version control | ❌ **NO — see §1. Biggest risk in this project.** |
+| LINE bot source code in version control | ✅ Backup tracked; live deployment remains manual |
 
 ---
 
-## 1. 🔴 Highest-priority risk: the LINE bot source is not in git
+## 1. LINE bot backup and deployment
 
-The LINE Official Account webhook is served by a Cloudflare Worker named **`kaile-line-bot`**,
-which is **not in this repository and not in any repository**. It was authored directly in the
-Cloudflare dashboard ("Edit code"), and the only copy of its source is **inside that dashboard**.
+The live LINE webhook is served by **kaile-line-bot**, independently of the website Worker.
+Its source backup is tracked at `line-bot/kaile-line-bot.js`, excluded from public assets by `.assetsignore`.
+The large embedded base64 content is the rich-menu image.
 
-A working copy previously existed in an agent sandbox; that sandbox has since been recycled and
-**the copy is gone**. It is also no longer recoverable from the session transcript (compacted).
+Agents can review and test this backup. Merging it does not deploy the live bot.
+The owner must paste the complete file into Cloudflare → kaile-line-bot → Edit code → Deploy.
+The deployed version has not been compared against this backup.
 
-**Consequences**
-- If that Worker is deleted, corrupted, or overwritten, the LINE trial flow is unrecoverable.
-- No agent can review, diff, test, or deploy it.
-- Every change requires the owner to hand-paste ~630 KB of code into a browser textarea.
+The 2026-09-26 update checks website sync HTTP status and JSON acknowledgement; failures log only to the Worker console.
+Customer replies and questionnaire wording are unchanged. Failed syncs are not automatically retried; KV leads remain the recovery source.
 
-**Recommended first action for whoever takes over**
-
-1. Ask the owner to open Cloudflare → Workers & Pages → **kaile-line-bot** → *Edit code*,
-   select all, and save the source to a file.
-2. Commit it (e.g. `line-bot/kaile-line-bot.js`) **and add `line-bot/` to `.assetsignore`**
-   so it is not publicly served (`assets.directory` is `"."`).
-3. Optionally then connect that Worker to Git so it can be deployed by push. This needs a
-   one-time Cloudflare setup by the owner **and** the `COUPONS` KV namespace ID, which must be
-   declared in its `wrangler` config — otherwise the first Git build will drop the KV binding
-   and break session/lead storage.
-
-> Note: the file is large mostly because the rich-menu image is embedded as base64.
+Optional Git deployment requires owner setup and the correct COUPONS KV namespace ID. Do not reuse the website Worker configuration.
 
 ---
 
@@ -55,7 +43,7 @@ A working copy previously existed in an agent sandbox; that sandbox has since be
 | Worker | Domain | Source | Bindings |
 |---|---|---|---|
 | `case-55` | `cash-bio.com` | **this repo** (`worker/index.js` + static assets) | D1 `DB` → `trial-db`; `ASSETS` |
-| `kaile-line-bot` | `kaile-line-bot.opopwowo.workers.dev` | dashboard only (§1) | KV `COUPONS` |
+| `kaile-line-bot` | `kaile-line-bot.opopwowo.workers.dev` | dashboard deployment; git backup (§1) | KV `COUPONS` |
 
 - **D1**: database `trial-db`, id `7d1e7789-afb6-4ff0-9b61-0a1d03947ab8`.
   Tables: `trial_applications` (live), `line_sessions` (used only by the dormant webhook).
@@ -134,7 +122,7 @@ broad `width: 100%` rule hit the two side-by-side date inputs. Fixed with target
 - **PR #55** — homepage `#reviews` became **🩺 醫師推薦 & 體驗分享**: five real dentist
   endorsement banners (`assets/img/doctors/`), 2-up on desktop with the 5th centred, single
   column on mobile; existing user testimonials kept verbatim; food-not-drug disclaimer added.
-- **kaile-line-bot** (dashboard, not in git): cross-post to `/api/trial-apply`, background
+- **kaile-line-bot** (dashboard deployment, git backup): cross-post to `/api/trial-apply`, background
   LINE display-name lookup, silent operation, and the step-3 reply-first fix.
 
 ---
