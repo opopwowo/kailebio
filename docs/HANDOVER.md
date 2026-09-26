@@ -14,7 +14,7 @@ Written 2026-09-25; repository facts updated 2026-09-26. Read `AGENTS.md` first 
 | Email notification (Resend) | ⚠️ Wired and believed working — **owner has not confirmed receipt** |
 | Admin backend `/admin/trials` | ✅ Live, CRM-style UI (PR #54) |
 | 醫師推薦 banners on homepage | ✅ Live (PR #55) |
-| LINE bot step-3 "stuck" bug | ⚠️ Fix written and owner says it was pasted/deployed — **end-to-end result never confirmed** |
+| LINE bot step-3 "stuck" bug | ✅ Owner confirmed real LINE chat worked after version `12592454`; the follow-up sync ordering fix is deployed as `e66036c1` |
 | LINE bot source code in version control | ✅ Backup tracked; live deployment remains manual |
 
 ---
@@ -29,10 +29,10 @@ Agents can review and test this backup. Merging it does not deploy the live bot.
 The owner or an authorized agent in the owner's signed-in dashboard session can deploy through
 Cloudflare → kaile-line-bot → Edit code → Deploy. On 2026-09-26, version `12592454` was deployed
 and shown Active with 100% traffic. Its editor source was compared with this backup before deployment;
-the content matched apart from the final newline. A live LINE application has not been checked.
+the content matched apart from the final newline. The owner subsequently confirmed real LINE chat worked. On 2026-09-26, version `e66036c1` was deployed at 100% traffic to start website sync independently of the owner LINE notification. That new version has not yet had a real application checked.
 
 The 2026-09-26 update checks website sync HTTP status and JSON acknowledgement; failures log only to the Worker console.
-The webhook replies first, then uses `ctx.waitUntil` for session cleanup, KV storage, owner notification, profile lookup, and website sync. Customer replies and questionnaire wording are unchanged. Failed syncs are not automatically retried; KV leads remain the recovery source.
+The webhook replies first, then uses `ctx.waitUntil` for session cleanup, KV storage, owner notification, profile lookup, and website sync. These jobs now run independently, so a stalled owner notification cannot delay website sync. Customer replies and questionnaire wording are unchanged. Failed syncs are not automatically retried; KV leads remain the recovery source.
 
 Optional Git deployment requires owner setup and the correct COUPONS KV namespace ID. Do not reuse the website Worker configuration.
 
@@ -100,7 +100,7 @@ cash-bio.com. The whole webhook handler is awaited before returning 200, so if t
 stalled, `reply()` was never reached. **Fix: reply first, then do all backend work in
 `try/catch`**, and use `AbortController` + `setTimeout` for timeouts rather than
 `AbortSignal.timeout` (not reliably available in that Worker runtime).
-⚠️ The owner pasted this fix but never reported the test result — **confirm it.**
+The owner confirmed that real LINE chat worked after the deployed reply-first fix.
 
 **F. Admin mobile layout overflowed horizontally.**
 Two causes: a `flex: 1 1 220px` basis became a huge *height* in the mobile column layout, and a
@@ -131,18 +131,13 @@ broad `width: 100%` rule hit the two side-by-side date inputs. Fixed with target
 
 ## 5. Open items / suggested next steps
 
-1. **Rescue the bot source into git** (§1). Highest value, lowest effort.
-2. **Confirm the step-3 fix** end to end: in LINE send 王小明 / 0912345678 /
-   台中市太平區測試路100號 → expect "🎉 收到您的試吃申請！", a new row in `/admin/trials`,
-   and an email. Also send `1` as the address → expect the "請輸入完整收件地址" prompt, not a freeze.
+1. **Confirm the latest `e66036c1` version** end to end: a real LINE application should receive the normal success reply and appear as a new row in `/admin/trials`. The owner confirmed real chat worked on the preceding version, but has not yet confirmed the new version's database sync.
 3. **Confirm Resend delivery** to `lawrenceyu911@gmail.com`; then verify the `cash-bio.com`
    domain in Resend and switch `NOTIFY_FROM` to `no-reply@cash-bio.com`.
 4. **Decide the fate of `/api/line-webhook`** in `worker/index.js` — it is dead code (a second
    bot the owner did not want). Removing it would shrink the Worker and remove confusion; it is
    currently harmless.
-5. `/admin/api/list` caps at **500 rows** and the admin has no pagination. Fine now; revisit as
-   applications grow.
-6. Consider a lightweight visual-regression check — there is no test suite of any kind.
+5. `/admin/api/list` now paginates at 50 rows per page, and `docs/check-trials.mjs` covers it and the LINE sync behavior.
 
 ---
 
