@@ -292,7 +292,7 @@ async function handleTrialInput(ev, env, token, sess, text, userId) {
           if (_p && _p.ok) _lineName = ((await _p.json()) || {}).displayName || "";
         }
       } catch (_pe) {}
-      await fetchWithTimeout("https://cash-bio.com/api/trial-apply", {
+      const syncResponse = await fetchWithTimeout("https://cash-bio.com/api/trial-apply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -305,6 +305,9 @@ async function handleTrialInput(ev, env, token, sess, text, userId) {
           source: "LINE"
         })
       }, 8000);
+      if (!syncResponse.ok) throw new Error("trial-apply HTTP " + syncResponse.status);
+      const syncResult = await syncResponse.json();
+      if (!syncResult || syncResult.ok !== true || !syncResult.id) throw new Error("trial-apply invalid acknowledgement");
     } catch (e) {
       console.log("sync to cash-bio failed", String(e));
     }

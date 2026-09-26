@@ -168,6 +168,13 @@ function safeEqual(a, b) {
 function noindexHeaders(extra = {}) { return { 'X-Robots-Tag': 'noindex, nofollow, noarchive', ...extra }; }
 
 /* ---------------- 後台：資料 API ---------------- */
+function taipeiDateBoundary(value, nextDay = false) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+  const midnight = new Date(value + 'T00:00:00Z');
+  if (!Number.isFinite(midnight.getTime()) || midnight.toISOString().slice(0, 10) !== value) return null;
+  return new Date(midnight.getTime() - 8 * 3600000 + (nextDay ? 86400000 : 0)).toISOString().slice(0, 19).replace('T', ' ');
+}
+
 async function adminList(request, env, url) {
   const auth = requireAuth(request, env); if (!auth.ok) return auth.resp;
   if (!env.DB) return json({ ok: false, error: 'db_not_configured' }, 503, noindexHeaders());
@@ -177,17 +184,30 @@ async function adminList(request, env, url) {
   const status = (url.searchParams.get('status') || '').trim();
   const from = (url.searchParams.get('from') || '').trim();
   const to = (url.searchParams.get('to') || '').trim();
+  const start = from ? taipeiDateBoundary(from) : null;
+  const end = to ? taipeiDateBoundary(to, true) : null;
+  if ((from && !start) || (to && !end) || (from && to && from > to)) {
+    return json({ ok: false, error: 'bad_date_range' }, 400, noindexHeaders());
+  }
+  const requestedPage = Number(url.searchParams.get('page') || 1);
+  if (!Number.isSafeInteger(requestedPage) || requestedPage < 1) return json({ ok: false, error: 'bad_page' }, 400, noindexHeaders());
+  const pageSize = 50;
 
   const where = []; const bind = [];
   if (q) { where.push('(name LIKE ? OR phone LIKE ? OR line_display_name LIKE ?)'); bind.push(`%${q}%`, `%${q}%`, `%${q}%`); }
   if (product) { where.push('product = ?'); bind.push(product); }
   if (status && STATUSES.includes(status)) { where.push('status = ?'); bind.push(status); }
-  if (from) { where.push('created_at >= ?'); bind.push(from + ' 00:00:00'); }
-  if (to) { where.push('created_at <= ?'); bind.push(to + ' 23:59:59'); }
+  if (start) { where.push('created_at >= ?'); bind.push(start); }
+  if (end) { where.push('created_at < ?'); bind.push(end); }
 
-  const sql = `SELECT * FROM trial_applications ${where.length ? 'WHERE ' + where.join(' AND ') : ''} ORDER BY created_at DESC, id DESC LIMIT 500`;
-  const { results } = await env.DB.prepare(sql).bind(...bind).all();
-  return json({ ok: true, count: results.length, items: results }, 200, noindexHeaders());
+  const filter = where.length ? 'WHERE ' + where.join(' AND ') : '';
+  const count = await env.DB.prepare(`SELECT COUNT(*) AS total FROM trial_applications ${filter}`).bind(...bind).first();
+  const total = count.total;
+  const pages = Math.max(1, Math.ceil(total / pageSize));
+  const page = Math.min(requestedPage, pages);
+  const sql = `SELECT * FROM trial_applications ${filter} ORDER BY created_at DESC, id DESC LIMIT ? OFFSET ?`;
+  const { results } = await env.DB.prepare(sql).bind(...bind, pageSize, (page - 1) * pageSize).all();
+  return json({ ok: true, count: results.length, total, page, pages, pageSize, items: results }, 200, noindexHeaders());
 }
 
 async function adminStatus(request, env) {
@@ -402,13 +422,14 @@ header .hstat b{font-size:17px;font-weight:800}
 .filters .dates{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:13px}
 .btn{background:var(--wine);color:#fff;border:none;border-radius:9px;font-size:14px;height:40px;padding:0 18px;font-weight:700;cursor:pointer}
 .btn.ghost{background:#f0ebe4;color:#5a545f}
+.pager{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:16px 0}.pager button:disabled{opacity:.45;cursor:default}.pager[hidden]{display:none}
 .listinfo{color:var(--muted);font-size:12px;margin:0 2px 10px}
 .card{background:var(--card);border:1px solid var(--line);border-left:4px solid #ccc;border-radius:14px;padding:14px 15px;margin-bottom:12px;box-shadow:0 2px 10px rgba(30,15,20,.05)}
-.r1{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-.name{font-size:20px;font-weight:800;line-height:1.25}
+.r1{display:flex;flex-wrap:wrap;min-width:0;justify-content:space-between;align-items:flex-start;gap:10px}
+.name{min-width:0;overflow-wrap:anywhere;font-size:20px;font-weight:800;line-height:1.25}
 .sbadge{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap;background:#faf7f3;border:1px solid currentColor}
 .phone{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:9px}
-.phone .num{font-size:18px;font-weight:800;color:var(--wine);letter-spacing:.5px}
+.phone .num{overflow-wrap:anywhere;min-width:0;font-size:18px;font-weight:800;color:var(--wine);letter-spacing:.5px}
 .mini{border:1px solid var(--line);background:#faf8f5;color:#5a545f;border-radius:8px;padding:0 11px;height:34px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
 .mini:active{background:#efe9e2}
 .block{margin-top:10px;display:flex;flex-direction:column;gap:7px}
@@ -454,6 +475,7 @@ select.status{flex:1 1 auto;min-width:0;max-width:100%;padding:0 10px;height:42p
   <button class="btn ghost" data-act="clear">清除</button>
  </div>
  <div class="listinfo" id="listinfo"></div>
+ <nav class="pager" id="pager" aria-label="申請名單分頁" hidden><button class="mini" id="prevPage" data-act="prev">上一頁</button><span id="pageInfo" aria-live="polite"></span><button class="mini" id="nextPage" data-act="next">下一頁</button></nav>
  <div id="list"></div>
 </div>
 <div id="toast"></div>
@@ -462,6 +484,8 @@ var STL={new:{t:'🟡 新申請',n:'新申請',c:'#E0A400'},contacted:{t:'🔵 �
 var UI_ORDER=['new','contacted','processing','shipped','done','cancelled'];
 var CHIP_ORDER=['new','contacted','processing','shipped','done','cancelled'];
 var ITEMS=[];
+var PAGE=1,PAGES=1,TOTAL=0,LOAD_ID=0;
+var ACTIVE_QUERY="";
 function esc(s){return String(s==null?'':s).replace(/[<>&"']/g,function(c){return{'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]})}
 function byId(id){for(var i=0;i<ITEMS.length;i++){if(ITEMS[i].id===id)return ITEMS[i]}return null}
 function shortId(s){s=String(s||'');return s.length>12?(s.slice(0,5)+'…'+s.slice(-5)):s}
@@ -475,7 +499,24 @@ function setActiveChip(k){var cs=document.querySelectorAll('#chips .chip');for(v
 function populateProducts(products){var sel=document.getElementById('product');var cur=sel.value;var h='<option value="">全部產品</option>';(products||[]).forEach(function(p){h+='<option value="'+esc(p)+'">'+esc(p)+'</option>'});sel.innerHTML=h;sel.value=cur}
 function renderChips(s){var cur=document.getElementById('status').value;var h='<button class="chip'+(cur===''?' active':'')+'" data-act="filter" data-k="">全部 <b>'+(s.total||0)+'</b></button>';CHIP_ORDER.forEach(function(k){var n=(s.byStatus&&s.byStatus[k])||0;h+='<button class="chip'+(cur===k?' active':'')+'" data-act="filter" data-k="'+k+'"><span class="dot" style="background:'+STL[k].c+'"></span>'+STL[k].n+' <b>'+n+'</b></button>'});document.getElementById('chips').innerHTML=h}
 async function loadStats(){try{var r=await fetch('/admin/api/stats',{headers:{'Accept':'application/json'}});if(!r.ok)return;var s=await r.json();document.getElementById('hdrToday').textContent=s.today||0;document.getElementById('hdrTotal').textContent=s.total||0;populateProducts(s.products);renderChips(s)}catch(e){}}
-async function load(){var info=document.getElementById('listinfo');var list=document.getElementById('list');info.textContent='載入中…';try{var r=await fetch('/admin/api/list?'+qs(),{headers:{'Accept':'application/json'}});if(!r.ok){list.innerHTML='<div class="empty">載入失敗（'+r.status+'）</div>';info.textContent='';return}var d=await r.json();ITEMS=d.items||[];info.textContent='符合條件：'+ITEMS.length+' 筆';list.innerHTML=ITEMS.length?ITEMS.map(card).join(''):'<div class="empty">目前沒有符合的申請</div>';setActiveChip(document.getElementById('status').value)}catch(e){list.innerHTML='<div class="empty">載入失敗，請重新整理</div>';info.textContent=''}}
+function renderPager(){document.getElementById('listinfo').textContent='符合條件：'+TOTAL+' 筆｜本頁 '+ITEMS.length+' 筆';document.getElementById('pager').hidden=TOTAL===0;document.getElementById('pageInfo').textContent='第 '+PAGE+' / '+PAGES+' 頁';document.getElementById('prevPage').disabled=PAGE<=1;document.getElementById('nextPage').disabled=PAGE>=PAGES}
+async function load(page,preserveNotes){
+ var drafts={};if(preserveNotes)ITEMS.forEach(function(x){var ta=document.getElementById("note-"+x.id);if(ta)drafts[x.id]=ta.value});
+ var requestId=++LOAD_ID;
+ var query=page?ACTIVE_QUERY:qs();
+ var info=document.getElementById('listinfo');var list=document.getElementById('list');
+ info.textContent='載入中…';document.getElementById('pager').hidden=true;
+ try{
+  var r=await fetch('/admin/api/list?'+query+'&page='+(page||1),{headers:{'Accept':'application/json'}});
+  if(requestId!==LOAD_ID)return;
+  if(!r.ok){list.innerHTML='<div class="empty">'+(r.status===400?'請確認日期區間是否正確':'載入失敗，請重新整理')+'</div>';info.textContent='';return}
+  var d=await r.json();if(requestId!==LOAD_ID)return;
+  ACTIVE_QUERY=query;PAGE=d.page;PAGES=d.pages;TOTAL=d.total;ITEMS=d.items||[];
+  ITEMS.forEach(function(x){if(Object.prototype.hasOwnProperty.call(drafts,x.id))x.notes=drafts[x.id]});
+  renderPager();list.innerHTML=ITEMS.length?ITEMS.map(card).join(''):'<div class="empty">目前沒有符合的申請</div>';
+  setActiveChip(new URLSearchParams(ACTIVE_QUERY).get('status')||'');
+ }catch(e){if(requestId!==LOAD_ID)return;list.innerHTML='<div class="empty">載入失敗，請重新整理</div>';info.textContent=''}
+}
 function card(x){
  var st=STL[x.status]||{t:x.status,n:x.status,c:'#9AA0A6'};
  var opts='';
@@ -497,10 +538,10 @@ function card(x){
  h+='</div>';
  return h;
 }
-async function onStatusChange(id,val){var x=byId(id);var prev=x?x.status:null;try{var r=await fetch('/admin/api/status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,status:val})});if(!r.ok)throw 0;if(x)x.status=val;var cd=document.getElementById('card-'+id);if(cd){cd.style.borderLeftColor=((STL[val]||{}).c)||'#ccc';var sb=cd.querySelector('.sbadge');if(sb){sb.textContent=(STL[val]||{}).n||val;sb.style.color=((STL[val]||{}).c)||'#888'}}var sf=document.getElementById('status').value;if(sf&&sf!==val&&cd){cd.parentNode.removeChild(cd);ITEMS=ITEMS.filter(function(it){return it.id!==id});var info=document.getElementById('listinfo');if(info)info.textContent='符合條件：'+ITEMS.length+' 筆';if(!ITEMS.length){document.getElementById('list').innerHTML='<div class="empty">目前沒有符合的申請</div>'}}loadStats();toast('狀態已更新 ✓')}catch(e){var sel=document.querySelector('select.status[data-id="'+id+'"]');if(sel&&prev!=null)sel.value=prev;toast('更新失敗，請重試')}}
+async function onStatusChange(id,val){var x=byId(id);var prev=x?x.status:null;try{var r=await fetch('/admin/api/status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,status:val})});if(!r.ok)throw 0;if(x)x.status=val;var cd=document.getElementById('card-'+id);if(cd){cd.style.borderLeftColor=((STL[val]||{}).c)||'#ccc';var sb=cd.querySelector('.sbadge');if(sb){sb.textContent=(STL[val]||{}).n||val;sb.style.color=((STL[val]||{}).c)||'#888'}}var sf=new URLSearchParams(ACTIVE_QUERY).get('status');if(sf&&sf!==val&&cd){load(PAGE,true)}loadStats();toast('狀態已更新 ✓')}catch(e){var sel=document.querySelector('select.status[data-id="'+id+'"]');if(sel&&prev!=null)sel.value=prev;toast('更新失敗，請重試')}}
 async function saveNote(id){var ta=document.getElementById('note-'+id);if(!ta)return;var v=ta.value;try{var r=await fetch('/admin/api/note',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,notes:v})});if(!r.ok)throw 0;var x=byId(id);if(x)x.notes=v;toast('備註已儲存 ✓')}catch(e){toast('儲存失敗，請重試')}}
 function filterStatus(k){document.getElementById('status').value=k;load()}
-document.addEventListener('click',function(e){var b=e.target.closest?e.target.closest('[data-act]'):null;if(!b)return;var a=b.getAttribute('data-act');if(a==='filter'){filterStatus(b.getAttribute('data-k')||'')}else if(a==='copy'){copyField(parseInt(b.getAttribute('data-id'),10),b.getAttribute('data-f'))}else if(a==='note'){saveNote(parseInt(b.getAttribute('data-id'),10))}else if(a==='go'){load()}else if(a==='clear'){['query','product','status','from','to'].forEach(function(k){document.getElementById(k).value=''});load()}});
+document.addEventListener('click',function(e){var b=e.target.closest?e.target.closest('[data-act]'):null;if(!b)return;var a=b.getAttribute('data-act');if(a==='filter'){filterStatus(b.getAttribute('data-k')||'')}else if(a==='copy'){copyField(parseInt(b.getAttribute('data-id'),10),b.getAttribute('data-f'))}else if(a==='note'){saveNote(parseInt(b.getAttribute('data-id'),10))}else if(a==='prev'&&PAGE>1){load(PAGE-1)}else if(a==='next'&&PAGE<PAGES){load(PAGE+1)}else if(a==='go'){load()}else if(a==='clear'){['query','product','status','from','to'].forEach(function(k){document.getElementById(k).value=''});load()}});
 document.addEventListener('change',function(e){var s=e.target;if(s&&s.getAttribute&&s.getAttribute('data-act')==='status'){onStatusChange(parseInt(s.getAttribute('data-id'),10),s.value)}});
 document.getElementById('query').addEventListener('keydown',function(e){if(e.key==='Enter')load()});
 loadStats();load();

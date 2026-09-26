@@ -10,9 +10,9 @@ A Traditional-Chinese (zh-Hant) marketing site for **愷樂生醫 (Cash Biomedic
 health-food brand (jelly-format supplements: 樂暢適 PLUS / GABA鈣鎂晶凍 / 左旋麩醯胺酸晶凍),
 plus a trial-application (試吃申請) pipeline and an internal admin backend.
 
-- **126 HTML pages**, 280 tracked files. **No build step, no package.json.** Plain HTML +
+- **147 HTML pages** (count with `git ls-files "*.html"`). **No build step, no package.json.** Plain HTML +
   a pre-compiled Tailwind CSS file. Edit HTML directly.
-- One Cloudflare Worker (`worker/index.js`, ~507 lines) adds the API + admin on top of the
+- One Cloudflare Worker (`worker/index.js`) adds the API + admin on top of the
   static site.
 
 ---
@@ -24,7 +24,7 @@ Almost every past mistake came from conflating these. They are **different deplo
 | | **case-55** | **kaile-line-bot** |
 |---|---|---|
 | Serves | `cash-bio.com` (the website) | The LINE Official Account webhook |
-| Source in this repo? | ✅ Yes — `worker/index.js` | ❌ **No. Not in git at all.** |
+| Source in this repo? | ✅ Yes — `worker/index.js` | ✅ Backup only — `line-bot/kaile-line-bot.js` |
 | How to deploy | Merge to `main` → Cloudflare auto-deploys | Cloudflare dashboard → *Edit code* → paste → Deploy |
 | Can an agent deploy it? | ✅ Yes (via git) | ❌ **No** — see §6 |
 
@@ -58,7 +58,7 @@ feature branch → PR → merge to `main` → Cloudflare Git integration auto-de
   **wipes dashboard-set secrets**. This already happened once. Do not remove.
 - `"assets": { "directory": "." }` — **the whole repo is publicly served.** Anything you add is
   reachable at `https://cash-bio.com/<path>` unless it is listed in **`.assetsignore`**.
-  Currently ignored: `worker/`, `db/`, `docs/`, `TRIAL-SETUP.md`, `AGENTS.md`, `*.sql`.
+  Currently ignored: `worker/`, `db/`, `docs/`, `TRIAL-SETUP.md`, `AGENTS.md`, `*.sql`, `line-bot/`.
 - D1 binding `DB` → database `trial-db`.
 
 **Secrets live in the Cloudflare dashboard, never in git:**
@@ -95,7 +95,7 @@ Two hard-won rules in that flow:
 | `/api/trial-apply` | POST | public | Accept application → D1 → email |
 | `/api/line-webhook` | POST | signature | **DORMANT** — not the live bot |
 | `/admin`, `/admin/trials` | GET | Basic | Admin UI (CRM-style list) |
-| `/admin/api/list` | GET | Basic | Search / filter |
+| `/admin/api/list` | GET | Basic | Search / filter / pagination (50 per page) |
 | `/admin/api/status` | POST | Basic | Change status |
 | `/admin/api/note` | POST | Basic | Save 客服備註 |
 | `/admin/api/stats` | GET | Basic | Totals, today (Taiwan tz), per-status, product list |
@@ -111,6 +111,7 @@ phone, email, location, product, notes, source, status, email_notified` (+3 inde
   `new / contacted / processing / shipped / done / cancelled` (+ legacy `invalid`).
   **Adding a status needs no migration** — just update `STATUSES` and the client `STL` map.
 - `created_at` is stored in **UTC**; the UI converts to `Asia/Taipei` for display, and
+  date filters convert Taiwan calendar boundaries to UTC;
   `adminStats` computes "today" with `date(created_at,'+8 hours')`.
 
 `line_sessions` exists only for the dormant webhook.
@@ -120,7 +121,7 @@ phone, email, location, product, notes, source, status, email_notified` (+3 inde
 ## 6. What an agent CANNOT do here (don't waste time)
 
 - **Cannot deploy `kaile-line-bot`.** Verified: no Cloudflare API token in the environment, and
-  outbound access to `api.cloudflare.com` is blocked by the proxy. The bot is not connected to
+  outbound access to `api.cloudflare.com` is blocked by the proxy. A backup is tracked at `line-bot/kaile-line-bot.js`. The live bot is not connected to
   any GitHub repo. Only the site owner can deploy it (dashboard → Edit code → paste → Deploy).
   To make it agent-deployable it would have to be connected to a Git repo first (one-time
   Cloudflare setup, and you'd need the `COUPONS` KV namespace ID to write a correct config).
@@ -192,6 +193,8 @@ grep -q '\.CLASS[{:, ]' assets/css/tailwind.css && echo OK || echo MISSING
 ```
 
 ---
+
+Run regression checks with Node.js 22.13+ / 24: `node docs/check-trials.mjs` (in-memory SQLite; no live services).
 
 ## 10. Before you finish
 
