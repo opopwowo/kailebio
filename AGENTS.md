@@ -123,7 +123,7 @@ phone, email, location, product, notes, source, status, email_notified` (+3 inde
 - **`kaile-line-bot` is not Git-deployed.** There is no Cloudflare API token in the environment,
   and outbound access to `api.cloudflare.com` is blocked by the proxy. With the owner's logged-in
   Cloudflare dashboard session and deployment authorization, an agent deployed the backup through
-  *Edit code → Deploy* on 2026-09-26 (version `12592454`, 100% traffic). The bot is still not
+  *Edit code → Deploy* on 2026-09-26 (latest version `e66036c1`, 100% traffic). The bot is still not
   connected to a Git repo. To enable Git deployment, the owner must connect it and configure the
   correct `COUPONS` KV namespace ID; never reuse the website Worker configuration.
 - **Cannot reach the live site from the sandbox.** `cash-bio.com` and `*.workers.dev` are

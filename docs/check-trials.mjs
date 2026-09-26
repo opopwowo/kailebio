@@ -27,4 +27,17 @@ const context=vm.createContext({console:{log(...x){logs.push(x.join(' '))}},setT
 vm.runInContext(bot,context);
 const kv={async delete(){calls.push('clear')},async put(){calls.push('save')},async get(k){return k.startsWith('sess:')?JSON.stringify({step:'address',name:'測試',phone:'0912345678',product:'test',ts:Date.now()}):null}};
 for(const [response,expectLog] of [[new Response('{"ok":true,"id":1}'),false],[new Response('{}',{status:500}),true],[new Response('{"ok":false}'),true],[new Response('not json'),true],[new Error('timeout'),true]]){calls=[];logs=[];syncResponse=response;const tasks=[];await context.handleEvent({type:'message',message:{type:'text',text:'台北市測試地址'},source:{userId:'fake-user'},replyToken:'fake'}, {COUPONS:kv}, {waitUntil(p){calls.push('waitUntil');tasks.push(p)}});assert(calls[0].includes('/reply'));assert(calls.includes('waitUntil'));assert.equal(calls.filter(x=>x.includes('/reply')).length,1);await Promise.all(tasks);assert.equal(logs.some(x=>x.includes('sync to cash-bio failed')),expectLog);}
+// A stalled owner notification must not delay the website sync.
+{
+  calls=[];logs=[];syncResponse=new Response('{"ok":true,"id":2}');
+  let releasePush;const pendingPush=new Promise(resolve=>{releasePush=resolve});
+  context.fetch=async(url)=>{calls.push(url);if(url.includes('/reply'))return new Response('{}');if(url.includes('/push'))return pendingPush;if(url.includes('/profile/'))return new Response('{}');if(url.includes('/trial-apply'))return syncResponse;throw Error('unexpected '+url)};
+  const ownerKv={...kv,async get(k){return k==='notify_owner'?'owner-user':kv.get(k)}};
+  const tasks=[];
+  await context.handleEvent({type:'message',message:{type:'text',text:'台北市測試地址'},source:{userId:'fake-user'},replyToken:'fake'}, {COUPONS:ownerKv}, {waitUntil(p){tasks.push(p)}});
+  await new Promise(resolve=>setTimeout(resolve,0));
+  assert(calls.some(x=>x.includes('/push')));
+  assert(calls.some(x=>x.includes('/trial-apply')),'website sync must start while owner push is pending');
+  releasePush(new Response('{}'));await Promise.all(tasks);
+}
 console.log('PASS: Taiwan date boundaries, invalid dates, 507-row pagination, filters, auth, admin script, LINE success/HTTP failure/bad JSON/timeout and reply-first waitUntil handling.');

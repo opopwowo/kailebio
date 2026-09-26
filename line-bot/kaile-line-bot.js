@@ -280,37 +280,9 @@ async function handleTrialInput(ev, env, token, sess, text, userId, ctx) {
     };
     // ★ 先回覆客人「申請成功」＋清除 session —— 保證一定回覆，不受後面寫入/寄信/同步影響（這就是原本卡住的原因）
     try { await reply(token, ev.replyToken, trialDone()); } catch (e) { console.log("reply fail", String(e)); }
-    const background = (async () => { try { await clearSession(env, userId); } catch (e) { console.log("clearSession fail", String(e)); }
-    // 以下全部背景處理（客人已收到成功訊息）：存 KV、通知店家、抓 LINE 名稱、寫入官網後台＋Email。任何錯誤都不影響客人。
-    try { await saveLead(env, lead); } catch (e) { console.log("saveLead fail", String(e)); }
-    try { await notifyOwnerNewLead(env, token, lead); } catch (e) { console.log("notifyOwner fail", String(e)); }
-    try {
-      let _lineName = "";
-      try {
-        if (userId) {
-          const _p = await fetchWithTimeout(`https://api.line.me/v2/bot/profile/${userId}`, { headers: { Authorization: `Bearer ${token}` } }, 6000);
-          if (_p && _p.ok) _lineName = ((await _p.json()) || {}).displayName || "";
+    // 客人已收到成功訊息；各項背景工作獨立執行。
+        const background = Promise.all([clearSession(env,userId).catch(e=>console.log("clearSession fail",String(e))),saveLead(env,lead).catch(e=>console.log("saveLead fail",String(e))),notifyOwnerNewLead(env,token,lead).catch(e=>console.log("notifyOwner fail",String(e))),(async()=>{try{let _lineName="";try{if(userId){const _p=await fetchWithTimeout(`https://api.line.me/v2/bot/profile/${userId}`,{headers:{Authorization:`Bearer ${token}`}},6000);if(_p&&_p.ok)_lineName=((await _p.json())||{}).displayName||""}}catch(_pe){}const syncResponse=await fetchWithTimeout("https://cash-bio.com/api/trial-apply",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:lead.name,phone:lead.phone,product:lead.selected_product,location:lead.address,line_user_id:lead.userId,line_display_name:_lineName,source:"LINE"})},8000);if(!syncResponse.ok)throw new Error("trial-apply HTTP "+syncResponse.status);const syncResult=await syncResponse.json();if(!syncResult||syncResult.ok!==true||!syncResult.id)throw new Error("trial-apply invalid acknowledgement")}catch(e){console.log("sync to cash-bio failed",String(e))}})()]);if(ctx&&ctx.waitUntil)ctx.waitUntil(background);else await background;return;
         }
-      } catch (_pe) {}
-      const syncResponse = await fetchWithTimeout("https://cash-bio.com/api/trial-apply", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: lead.name,
-          phone: lead.phone,
-          product: lead.selected_product,
-          location: lead.address,
-          line_user_id: lead.userId,
-          line_display_name: _lineName,
-          source: "LINE"
-        })
-      }, 8000); if (!syncResponse.ok) throw new Error("trial-apply HTTP " + syncResponse.status); const syncResult = await syncResponse.json(); if (!syncResult || syncResult.ok !== true || !syncResult.id) throw new Error("trial-apply invalid acknowledgement");
-    } catch (e) {
-      console.log("sync to cash-bio failed", String(e));
-    }
-      })(); if (ctx && ctx.waitUntil) ctx.waitUntil(background); else await background;
-          return;
-  }
   await clearSession(env, userId);
   return reply(token, ev.replyToken, [textCard("\u6211\u5011\u91CD\u65B0\u958B\u59CB\u597D\u55CE\uFF1F\u9EDE\u9078\u55AE\u7684\u300C\u{1F381} \u4E09\u7A2E\u64C7\u4E00\u8A66\u5403\u300D\u5373\u53EF \u{1F60A}")]);
 }
