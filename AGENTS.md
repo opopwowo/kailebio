@@ -25,8 +25,8 @@ Almost every past mistake came from conflating these. They are **different deplo
 |---|---|---|
 | Serves | `cash-bio.com` (the website) | The LINE Official Account webhook |
 | Source in this repo? | ✅ Yes — `worker/index.js` | ✅ Backup only — `line-bot/kaile-line-bot.js` |
-| How to deploy | Merge to `main` → Cloudflare auto-deploys | Cloudflare dashboard → *Edit code* → paste → Deploy |
-| Can an agent deploy it? | ✅ Yes (via git) | ❌ **No** — see §6 |
+| How to deploy | Merge to `main` → Cloudflare auto-deploys | Cloudflare dashboard → *Edit code* → Deploy |
+| Can an agent deploy it? | ✅ Yes (via git) | ✅ Through an owner-signed-in Cloudflare dashboard session; Git alone does not deploy it |
 
 **`/api/line-webhook` in `worker/index.js` is DORMANT.** It is a second, unused conversational
 bot. The live LINE Official Account webhook points at **kaile-line-bot**, *not* at this Worker.
@@ -118,13 +118,14 @@ phone, email, location, product, notes, source, status, email_notified` (+3 inde
 
 ---
 
-## 6. What an agent CANNOT do here (don't waste time)
+## 6. Deployment and live-verification limits
 
-- **Cannot deploy `kaile-line-bot`.** Verified: no Cloudflare API token in the environment, and
-  outbound access to `api.cloudflare.com` is blocked by the proxy. A backup is tracked at `line-bot/kaile-line-bot.js`. The live bot is not connected to
-  any GitHub repo. Only the site owner can deploy it (dashboard → Edit code → paste → Deploy).
-  To make it agent-deployable it would have to be connected to a Git repo first (one-time
-  Cloudflare setup, and you'd need the `COUPONS` KV namespace ID to write a correct config).
+- **`kaile-line-bot` is not Git-deployed.** There is no Cloudflare API token in the environment,
+  and outbound access to `api.cloudflare.com` is blocked by the proxy. With the owner's logged-in
+  Cloudflare dashboard session and deployment authorization, an agent deployed the backup through
+  *Edit code → Deploy* on 2026-09-26 (version `12592454`, 100% traffic). The bot is still not
+  connected to a Git repo. To enable Git deployment, the owner must connect it and configure the
+  correct `COUPONS` KV namespace ID; never reuse the website Worker configuration.
 - **Cannot reach the live site from the sandbox.** `cash-bio.com` and `*.workers.dev` are
   blocked by the proxy (403 on CONNECT). You cannot curl-test production or read Worker logs.
   Verify by reading code + rendering locally; ask the owner for the live check.

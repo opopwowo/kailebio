@@ -26,11 +26,13 @@ Its source backup is tracked at `line-bot/kaile-line-bot.js`, excluded from publ
 The large embedded base64 content is the rich-menu image.
 
 Agents can review and test this backup. Merging it does not deploy the live bot.
-The owner must paste the complete file into Cloudflare → kaile-line-bot → Edit code → Deploy.
-The deployed version has not been compared against this backup.
+The owner or an authorized agent in the owner's signed-in dashboard session can deploy through
+Cloudflare → kaile-line-bot → Edit code → Deploy. On 2026-09-26, version `12592454` was deployed
+and shown Active with 100% traffic. Its editor source was compared with this backup before deployment;
+the content matched apart from the final newline. A live LINE application has not been checked.
 
 The 2026-09-26 update checks website sync HTTP status and JSON acknowledgement; failures log only to the Worker console.
-Customer replies and questionnaire wording are unchanged. Failed syncs are not automatically retried; KV leads remain the recovery source.
+The webhook replies first, then uses `ctx.waitUntil` for session cleanup, KV storage, owner notification, profile lookup, and website sync. Customer replies and questionnaire wording are unchanged. Failed syncs are not automatically retried; KV leads remain the recovery source.
 
 Optional Git deployment requires owner setup and the correct COUPONS KV namespace ID. Do not reuse the website Worker configuration.
 
